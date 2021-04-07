@@ -8,3 +8,7 @@
     --proton-tab-block-margin: 0px !important;
     --proton-tab-inline-padding: 0px !important;
 }
+
+#TabsToolbar {
+    height: 36px !important;
+}
