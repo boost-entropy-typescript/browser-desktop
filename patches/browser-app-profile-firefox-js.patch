@@ -1109,4 +1109,17 @@ index ef44a16daa39b28bf0e475ce94c2d249aaeb5f3d..34e4c01fbe43ce1bb671e8dc1b6c7e9f
 +pref("gfx.webrender.all", true);
 +pref("browser.tabs.drawInTitlebar", true);
 +pref("browser.toolbars.bookmarks.visibility", "never");
++
++// Proton
++pref("browser.proton.appmenu.enable", true);
++pref("browser.proton.contextmenus.enabled", true);
++pref("browser.proton.doorhangers.enabled", true);
++pref("browser.proton.enabled", true);
++pref("browser.proton.infobars.enabled", true);
++pref("browser.proton.modals.enabled", true);
++pref("browser.proton.places-tooltip.enabled", true);
++pref("browser.proton.tabs.enabled", true);
++pref("browser.proton.toolbar.enabled", true);
++pref("browser.proton.toolbar.version", 3);
++pref("browser.proton.urlbar.enabled", true);
 \ No newline at end of file
