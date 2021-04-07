@@ -1,0 +1,10 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+:root {
+    --proton-tab-radius: 0px !important;
+    --proton-shadow-blur-radius: 0px !important;
+    --proton-tab-block-margin: 0px !important;
+    --proton-tab-inline-padding: 0px !important;
+}
