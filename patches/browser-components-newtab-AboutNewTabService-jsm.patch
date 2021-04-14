@@ -1,0 +1,24 @@
+diff --git a/browser/components/newtab/AboutNewTabService.jsm b/browser/components/newtab/AboutNewTabService.jsm
+index 2f967030cb0634037581f5226fb845ed4570469b..24ea454b7318653769473b481b92e28049ac2a48 100644
+--- a/browser/components/newtab/AboutNewTabService.jsm
++++ b/browser/components/newtab/AboutNewTabService.jsm
+@@ -430,13 +430,13 @@ class BaseAboutNewTabService {
+     // "resource://activity-stream/prerendered/activity-stream-debug.html"
+     // "resource://activity-stream/prerendered/activity-stream-noscripts.html"
+     return [
+-      "resource://activity-stream/prerendered/",
+-      "activity-stream",
++      "resource://activity-stream/data/content/",
++      "index",
+       // Debug version loads dev scripts but noscripts separately loads scripts
+-      this.activityStreamDebug && !this.privilegedAboutProcessEnabled
+-        ? "-debug"
+-        : "",
+-      this.privilegedAboutProcessEnabled ? "-noscripts" : "",
++      //this.activityStreamDebug && !this.privilegedAboutProcessEnabled
++      //  ? "-debug"
++      //  : "",
++      //this.privilegedAboutProcessEnabled ? "-noscripts" : "",
+       ".html",
+     ].join("");
+   }

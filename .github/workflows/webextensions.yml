@@ -27,20 +27,38 @@ jobs:
           repo: adblock
           excludes: draft
 
+      - id: ntp
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          owner: dothq
+          repo: ntp
+          excludes: draft
+
       - name: Download WebExtensions
         run: |
           cd browser-desktop
           curl -L https://github.com/dothq-extensions/adblock/releases/download/${{ steps.dotshield.outputs.release }}/addon.zip -o shield.zip
+          curl -L https://github.com/dothq/ntp/releases/download/${{ steps.ntp.outputs.release }}/ntp.zip -o ntp.zip
 
       - name: Unpack
         run: |
           cd browser-desktop
           ls
           pwd
+          echo "--------------------------------"
           echo "Unpacking shield..."
           mkdir -p common/browser/extensions
           rm -rf ./common/browser/extensions/shield
           unzip -d ./common/browser/extensions/shield shield.zip
+          cp ./common/shield.moz.build ./common/browser/extensions/shield/moz.build
+          rm -rf shield.zip
+          git add ./common/browser/extensions/shield && git commit -m "🛡 Dot Shield ${{ steps.dotshield.outputs.release }}"
+          echo "Unpacking shield... done!"
+          echo "--------------------------------"
+          echo "Unpacking ntp..."
+          mkdir -p common/browser/extensions
+          rm -rf ./common/browser/extensions/newtab
+          unzip -d ./common/browser/extensions/newtab ntp.zip
           cp ./common/shield.moz.build ./common/browser/extensions/shield/moz.build
           rm -rf shield.zip
           git add ./common/browser/extensions/shield && git commit -m "🛡 Dot Shield ${{ steps.dotshield.outputs.release }}"

@@ -1,0 +1,15 @@
+diff --git a/browser/components/newtab/jar.mn b/browser/components/newtab/jar.mn
+index 59ccd0ca577f5947b4ce8077b444673b80b7be67..be58136fe7cbb244ecb756936e95e8fa7ec3f4c9 100644
+--- a/browser/components/newtab/jar.mn
++++ b/browser/components/newtab/jar.mn
+@@ -27,6 +27,10 @@ browser.jar:
+ * res/activity-stream/data/content/abouthomecache/script.js.template (./data/content/abouthomecache/script.js.template)
+   content/activity-stream/data/content/assets/  (./data/content/assets/*)
+   content/activity-stream/data/content/tippytop/ (./data/content/tippytop/*)
++  res/activity-stream/data/content/ntp.bundle.js (./data/content/ntp.bundle.js)
++  res/activity-stream/data/content/backgrounds.json (./data/content/backgrounds.json)
++  res/activity-stream/data/content/index.html (./data/content/index.html)
++  res/activity-stream/data/content/backgrounds (./data/content/backgrounds/*)
+   res/activity-stream/data/content/activity-stream.bundle.js (./data/content/activity-stream.bundle.js)
+   res/activity-stream/data/content/newtab-render.js (./data/content/newtab-render.js)
+   res/activity-stream/data/custom-elements/ (./components/CustomElements/*)
