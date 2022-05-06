@@ -1,0 +1,6 @@
+version: "1"
+rules:
+  - base: nightly
+    upstream: null:nightly
+    mergeMethod: merge
+    mergeUnstable: true
