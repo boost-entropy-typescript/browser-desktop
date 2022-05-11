@@ -1,6 +1,6 @@
 version: "1"
 rules:
   - base: nightly
-    upstream: null:nightly
+    upstream: dothq:nightly
     mergeMethod: merge
     mergeUnstable: true
