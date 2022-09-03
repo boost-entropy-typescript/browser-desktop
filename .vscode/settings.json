@@ -17,16 +17,20 @@
 		"**/node_modules/*/**": true,
 		"*.tar.xz": true
 	},
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
 	"javascript.updateImportsOnFileMove.enabled": "always",
 	"editor.formatOnSave": true,
-    	"editor.codeActionsOnSave": {
+	"editor.codeActionsOnSave": {
 		"source.organizeImports": true,
 		"source.fixAll": true
 	},
-	"editor.defaultFormatter": "esbenp.prettier-vscode", 
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"files.exclude": {
 		"**/node_modules": true,
-		"**/dist": true
+		"**/dist": true,
+		"**/__pycache__": true
 	},
 	"macros.list": {
 		"license": [
@@ -95,6 +99,16 @@
 			"emoji": "🔫",
 			"code": ":gun:",
 			"description": "Update events or IPC thread"
+		},
+		{
+			"emoji": "🤝",
+			"code": ":handshake:",
+			"description": "Update or create helper functions or modules"
+		},
+		{
+			"emoji": "💧",
+			"code": ":sweat_drops:",
+			"description": "Update browser glue"
 		}
 	],
 	"git.ignoreLimitWarning": true
