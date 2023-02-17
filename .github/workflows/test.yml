@@ -16,6 +16,7 @@ jobs:
               with:
                   repository: dothq/gecko-dev
                   path: gecko
+                  fetch-depth: 0 # Get all history as we need to resolve patch conflicts
 
             - name: Checkout browser-desktop repo
               uses: actions/checkout@v3
@@ -34,6 +35,11 @@ jobs:
                       exit 1
                   fi
 
+            - name: Setup Git identity
+              run: |
+                  git config --global user.email "worker@dothq.org"
+                  git config --global user.name "Dot HQ"
+
             - name: Setup mach
               working-directory: gecko/dot
               run: |
@@ -43,15 +49,6 @@ jobs:
             - name: Import Gecko patches
               working-directory: gecko/dot
               run: ./mach import-patches
-
-            - name: Assert mozconfig is setup
-              working-directory: gecko
-              shell: bash
-              run: |
-                  if !grep -q $topsrcdir/dot/config/mozconfigs/common mozconfig; then
-                    echo Assertion failed! mozconfig is not setup.
-                    exit 1
-                  fi
 
             - name: Build browser
               working-directory: gecko/dot
