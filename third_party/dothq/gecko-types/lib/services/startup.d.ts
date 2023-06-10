@@ -3,7 +3,8 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 export interface ServicesStartup {
-    quit: (optionsBitmask: number) => void;
-    eForceQuit: number;
-    eRestart: number;
+	quit: (optionsBitmask: number) => void;
+	eForceQuit: number;
+	eRestart: number;
+	shuttingDown: boolean;
 }

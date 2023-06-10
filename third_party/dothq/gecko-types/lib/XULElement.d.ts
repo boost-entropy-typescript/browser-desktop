@@ -5,4 +5,6 @@
 export interface XULElement extends HTMLElement {
 	new (): XULElement;
 	prototype: XULElement;
+
+	isInstance: (el: XULElement) => boolean;
 }
