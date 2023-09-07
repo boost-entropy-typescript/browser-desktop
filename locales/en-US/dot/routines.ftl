@@ -7,10 +7,15 @@ routine-new-window = New window
 routine-new-private-browsing-window = New private window
 routine-close-window = Close
 
-routine-navigate-back = Go Back
-routine-navigate-forward = Go Forward
+routine-navigate-back = Back
+routine-navigate-forward = Forward
 
 routine-reload-page = Reload
     .bypass-cache = Reload (Bypass cache)
 
 routine-stop-page = Stop
+
+routine-close-tab = Close tab
+
+routine-toggle-menubar = Toggle menubar
+routine-toggle-identity-popout = Page info

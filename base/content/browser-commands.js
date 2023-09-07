@@ -3,19 +3,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var { DotWindowTracker } = ChromeUtils.importESModule(
-    "resource:///modules/DotWindowTracker.sys.mjs"
+	"resource:///modules/DotWindowTracker.sys.mjs"
 );
 
 var { NavigationHelper } = ChromeUtils.importESModule(
-    "resource:///modules/NavigationHelper.sys.mjs"
+	"resource:///modules/NavigationHelper.sys.mjs"
 );
 
-var { StartPage } = ChromeUtils.importESModule("resource:///modules/StartPage.sys.mjs");
+var { StartPage } = ChromeUtils.importESModule(
+	"resource:///modules/StartPage.sys.mjs"
+);
 
 /**
  * @callback BrowserCommandAction
  * @param {BrowserCommandContext} [data] - The action's payload
- * 
+ *
  * @callback BrowserCommandEnabled
  * @param {BrowserCommandContext} [data] - The action's payload
  * @returns {boolean}
@@ -29,7 +31,7 @@ var { StartPage } = ChromeUtils.importESModule("resource:///modules/StartPage.sy
  *      execCommand: typeof gDotCommands.execCommand;
  *      [key: string]: any;
  * }} BrowserCommandContext
- * 
+ *
  * @typedef {Object} BrowserCommand
  * @property {string} name - The command's name
  * @property {BrowserCommandAction} action - The command's action
@@ -39,257 +41,337 @@ var { StartPage } = ChromeUtils.importESModule("resource:///modules/StartPage.sy
  */
 
 var gDotCommands = {
-    COMMAND_CATEGORY_APPLICATION: "application",
-    COMMAND_CATEGORY_BROWSING: "browsing",
-    COMMAND_CATEGORY_BROWSER: "browser",
+	COMMAND_CATEGORY_APPLICATION: "application",
+	COMMAND_CATEGORY_BROWSING: "browsing",
+	COMMAND_CATEGORY_BROWSER: "browser",
 
-    /**
-     * Locates a command by its ID
-     * @param {string} id 
-     * @returns {BrowserCommand}
-     */
-    getCommandById(id) {
-        return this.commands.find(c => c.name == id);
-    },
+	/**
+	 * Locates a command by its ID
+	 * @param {string} id
+	 * @returns {BrowserCommand}
+	 */
+	getCommandById(id) {
+		return this.commands.find((c) => c.name == id);
+	},
 
-    /**
-     * A list of commands
-     * @returns {BrowserCommand[]}
-     */
-    get commands() {
-        return [
-            /* Application */
-            {
-                name: "application.new_window",
-                action: () => DotWindowTracker.openWindow(),
+	/**
+	 * A list of commands
+	 * @returns {BrowserCommand[]}
+	 */
+	get commands() {
+		return [
+			/* Application */
+			{
+				name: "application.new_window",
+				action: () => DotWindowTracker.openWindow(),
 
-                enabled: () => true,
+				enabled: () => true,
 
-                category: this.COMMAND_CATEGORY_APPLICATION
-            },
-            {
-                name: "application.new_private_browsing_window",
-                action: () => DotWindowTracker.openWindow({ isPrivate: true }),
+				category: this.COMMAND_CATEGORY_APPLICATION
+			},
+			{
+				name: "application.new_private_browsing_window",
+				action: () => DotWindowTracker.openWindow({ isPrivate: true }),
 
-                enabled: () => true,
+				enabled: () => true,
 
-                category: this.COMMAND_CATEGORY_APPLICATION
-            },
-            {
-                name: "application.close",
+				category: this.COMMAND_CATEGORY_APPLICATION
+			},
+			{
+				name: "application.close",
 
-                action: ({ win }) => {
-                    if (!win && win.closed) return;
+				action: ({ win }) => {
+					if (!win && win.closed) return;
 
-                    win.close();
-                },
+					win.close();
+				},
 
-                enabled: () => true,
+				enabled: () => true,
 
-                category: this.COMMAND_CATEGORY_APPLICATION
-            },
-            {
-                name: "application.new_tab",
+				category: this.COMMAND_CATEGORY_APPLICATION
+			},
+			{
+				name: "application.new_tab",
 
-                action: ({ win }) => {
-                    const [urlToLoad] = StartPage.getHomePage();
+				action: ({ win }) => {
+					const [urlToLoad] = StartPage.getHomePage();
 
-                    NavigationHelper.openTrustedLinkIn(win, urlToLoad, "tab");
-                },
+					NavigationHelper.openTrustedLinkIn(win, urlToLoad, "tab");
+				},
 
-                enabled: () => true,
+				enabled: () => true,
 
-                category: this.COMMAND_CATEGORY_APPLICATION
-            },
+				category: this.COMMAND_CATEGORY_APPLICATION
+			},
+			{
+				name: "application.close_tab",
 
-            /* Browsing */
-            {
-                name: "browsing.navigate_back",
+				action: ({ tab }) => {
+					tab.maybeClose();
+				},
 
-                action: ({ browser }) => {
-                    if (browser.canGoBack) {
-                        browser.goBack();
-                    }
-                },
+				enabled: () => true,
 
-                enabled: ({ browser }) => browser.canGoBack,
+				category: this.COMMAND_CATEGORY_APPLICATION
+			},
 
-                category: this.COMMAND_CATEGORY_BROWSING
-            },
-            {
-                name: "browsing.navigate_forward",
+			/* Browsing */
+			{
+				name: "browsing.navigate_back",
 
-                action: ({ browser }) => {
-                    if (browser.canGoForward) {
-                        browser.goForward();
-                    }
-                },
+				action: ({ browser }) => {
+					if (browser.canGoBack) {
+						browser.goBack();
+					}
+				},
 
-                enabled: ({ browser }) => browser.canGoForward,
+				enabled: ({ browser }) => browser.canGoBack,
 
-                category: this.COMMAND_CATEGORY_BROWSING
-            },
-            {
-                name: "browsing.reload_page",
+				category: this.COMMAND_CATEGORY_BROWSING
+			},
+			{
+				name: "browsing.navigate_forward",
 
-                action: ({ browser, bypassCache }) => {
-                    const { LOAD_FLAGS_NONE, LOAD_FLAGS_BYPASS_CACHE } = Ci.nsIWebNavigation;
+				action: ({ browser }) => {
+					if (browser.canGoForward) {
+						browser.goForward();
+					}
+				},
 
-                    let flags = LOAD_FLAGS_NONE;
+				enabled: ({ browser }) => browser.canGoForward,
 
-                    if (bypassCache == true) {
-                        flags |= LOAD_FLAGS_BYPASS_CACHE;
-                    }
+				category: this.COMMAND_CATEGORY_BROWSING
+			},
+			{
+				name: "browsing.reload_page",
 
-                    browser.reloadWithFlags(flags);
-                },
+				action: ({ browser, bypassCache }) => {
+					const { LOAD_FLAGS_NONE, LOAD_FLAGS_BYPASS_CACHE } =
+						Ci.nsIWebNavigation;
 
-                enabled: () => true,
+					let flags = LOAD_FLAGS_NONE;
 
-                category: this.COMMAND_CATEGORY_BROWSING
-            },
-            {
-                name: "browsing.stop_page",
+					if (bypassCache == true) {
+						flags |= LOAD_FLAGS_BYPASS_CACHE;
+					}
 
-                action: ({ browser, tab }) => {
-                    const { STOP_ALL } = Ci.nsIWebNavigation;
+					browser.reloadWithFlags(flags);
+				},
 
-                    browser.stop(STOP_ALL);
-                },
+				enabled: () => true,
 
-                enabled: ({ tab }) => tab.progress !== tab.TAB_PROGRESS_NONE,
+				category: this.COMMAND_CATEGORY_BROWSING
+			},
+			{
+				name: "browsing.stop_page",
 
-                category: this.COMMAND_CATEGORY_BROWSING
-            },
-            {
-                name: "browsing.reload_stop_page",
+				action: ({ browser, tab }) => {
+					const { STOP_ALL } = Ci.nsIWebNavigation;
 
-                action: (ctx) => {
-                    const { execCommand, tab } = ctx;
+					browser.stop(STOP_ALL);
+				},
 
-                    if (tab.progress !== tab.TAB_PROGRESS_NONE) {
-                        execCommand("browsing.stop_page", ctx);
-                        return;
-                    }
+				enabled: ({ tab }) => tab.progress !== tab.TAB_PROGRESS_NONE,
 
+				category: this.COMMAND_CATEGORY_BROWSING
+			},
+			{
+				name: "browsing.reload_stop_page",
 
-                    execCommand("browsing.reload_page", ctx);
-                },
+				action: (ctx) => {
+					const { execCommand, tab } = ctx;
 
-                enabled: () => true,
+					if (tab.progress !== tab.TAB_PROGRESS_NONE) {
+						execCommand("browsing.stop_page", ctx);
+						return;
+					}
 
-                category: this.COMMAND_CATEGORY_BROWSING,
-            },
+					execCommand("browsing.reload_page", ctx);
+				},
 
-            /* Browser */
-            {
-                name: "browser.toolbar.toggle",
+				enabled: () => true,
 
-                action: ({ gDot, name }) => {
-                    const toolbar = gDot.toolbox.getToolbarByName(name);
-                    if (!toolbar) {
-                        throw new Error(`Toolbar with name '${name}' could not be found!`);
-                    }
+				category: this.COMMAND_CATEGORY_BROWSING
+			},
 
-                    toolbar.toggleCollapsed();
-                },
+			/* Browser */
+			{
+				name: "browser.toolbar.toggle",
 
-                enabled: () => true,
+				action: ({ gDot, name }) => {
+					const toolbar = gDot.toolbox.getToolbarByName(name);
+					if (!toolbar) {
+						throw new Error(
+							`Toolbar with name '${name}' could not be found!`
+						);
+					}
 
-                category: this.COMMAND_CATEGORY_BROWSER,
-            },
-        ];
-    },
+					toolbar.toggleCollapsed();
+				},
 
-    /**
-     * Create a combined context object using provided overrides
-     * @param {object} overrides 
-     * 
-     * @returns {BrowserCommandContext}
-     */
-    createContext(overrides) {
-        return {
-            ...overrides,
+				enabled: () => true,
 
-            win: overrides.win,
+				category: this.COMMAND_CATEGORY_BROWSER
+			},
+			{
+				name: "browser.popouts.toggle",
 
-            /**
-             * @returns {BrowserTab}
-             */
-            get tab() {
-                if (overrides.tab && overrides.tab.constructor.name == "BrowserTab") {
-                    return overrides.tab;
-                }
+				action: ({ win, name, tab, gDot }) => {
+					switch (name) {
+						case "page-identity": {
+							if (
+								gDot.tabs._isWebContentsBrowserElement(
+									tab.webContents
+								)
+							) {
+								win.openDialog(
+									"chrome://browser/content/pageinfo/pageInfo.xhtml",
+									"",
+									"chrome,toolbar,dialog=no,resizable",
+									{ browser: tab.webContents }
+								);
+							}
+						}
+					}
+				},
 
-                if (overrides.browser && overrides.browser.constructor.name == "MozBrowser") {
-                    return this.win.gDot.tabs.getTabForWebContents(overrides.browser);
-                }
+				enabled: () => true,
 
-                return this.selectedTab;
-            },
+				category: this.COMMAND_CATEGORY_BROWSER
+			}
+		];
+	},
 
-            /**
-             * @returns {BrowserTab}
-             */
-            get selectedTab() {
-                return this.win.gDot.tabs.selectedTab;
-            },
+	/**
+	 * Create a combined context object using provided overrides
+	 * @param {object} incomingOverrides
+	 *
+	 * @returns {BrowserCommandContext}
+	 */
+	createContext(incomingOverrides) {
+		// If we accidently pass in a rendered tab, make sure we get the internal tab
+		if (
+			incomingOverrides.tab &&
+			incomingOverrides.tab instanceof BrowserRenderedTab
+		) {
+			incomingOverrides.tab = /** @type {BrowserRenderedTab} */ (
+				incomingOverrides.tab
+			).linkedTab;
+		}
 
-            /**
-             * @returns {ChromeBrowser}
-             */
-            get browser() {
-                if (overrides.browser && overrides.browser.constructor.name == "MozBrowser") {
-                    return (overrides.browser);
-                }
+		const ctx = {
+			_overrides: { ...incomingOverrides },
 
-                if (
-                    this.tab &&
-                    this.tab.webContents &&
-                    this.win.gDot.tabs._isWebContentsBrowserElement(this.tab.webContents)
-                ) {
-                    return /** @type {ChromeBrowser} */ (this.tab.webContents);
-                }
+			/** @type {Window} */
+			win: incomingOverrides.win,
 
-                return this.win.gDot.tabs._isWebContentsBrowserElement(this.selectedTab.webContents)
-                    ? /** @type {ChromeBrowser} */ (this.selectedTab.webContents)
-                    : null;
-            },
+			/**
+			 * @returns {BrowserTab}
+			 */
+			get tab() {
+				if (
+					this._overrides.tab &&
+					this._overrides.tab instanceof BrowserTab
+				) {
+					return this._overrides.tab;
+				}
 
-            get gDot() {
-                return this.win.gDot;
-            },
+				if (this)
+					if (
+						this._overrides.browser &&
+						this._overrides.browser.constructor.name == "MozBrowser"
+					) {
+						return this.win.gDot.tabs.getTabForWebContents(
+							this._overrides.browser
+						);
+					}
 
-            /**
-             * @type {typeof gDotCommands.execCommand}
-             */
-            execCommand(...args) {
-                window.gDotCommands.execCommand.bind(gDotCommands, ...args)();
-            }
-        }
-    },
+				return this.selectedTab;
+			},
 
-    /**
-     * Executes a command action
-     * @param {string} name 
-     * @param {object} ctx
-     */
-    execCommand(name, ctx) {
-        const cmd = this.commands.find(c => c.name == name);
+			/**
+			 * @returns {BrowserTab}
+			 */
+			get selectedTab() {
+				if (!this.win.gDot?.tabs) return null;
 
-        if (!cmd) {
-            console.warn(`No command with the name '${name}'!`);
-            return;
-        }
+				return this.win.gDot?.tabs?.selectedTab;
+			},
 
-        const context = this.createContext({
-            ...ctx,
-            win: window,
-        });
+			/**
+			 * @returns {ChromeBrowser}
+			 */
+			get browser() {
+				if (
+					this._overrides.browser &&
+					this._overrides.browser.constructor.name == "MozBrowser"
+				) {
+					return this._overrides.browser;
+				}
 
-        if (!cmd.enabled(context)) return;
+				if (!this.win.gDot?.tabs) return null;
 
-        console.debug("Command:", name);
-        return cmd.action.bind(gDotCommands, context)();
-    }
+				if (
+					this.tab &&
+					this.tab.webContents &&
+					this.win.gDot.tabs._isWebContentsBrowserElement(
+						this.tab.webContents
+					)
+				) {
+					return /** @type {ChromeBrowser} */ (this.tab.webContents);
+				}
+
+				return this.win.gDot.tabs._isWebContentsBrowserElement(
+					this.selectedTab.webContents
+				)
+					? /** @type {ChromeBrowser} */ (
+							this.selectedTab.webContents
+					  )
+					: null;
+			},
+
+			get gDot() {
+				return this.win.gDot;
+			},
+
+			/**
+			 * @type {typeof gDotCommands.execCommand}
+			 */
+			execCommand(...args) {
+				this.win.gDotCommands.execCommand.bind(gDotCommands, ...args)();
+			}
+		};
+
+		for (const [key, value] of Object.entries(incomingOverrides || {})) {
+			if (!ctx[key]) {
+				ctx[key] = value;
+			}
+		}
+
+		return ctx;
+	},
+
+	/**
+	 * Executes a command action
+	 * @param {string} name
+	 * @param {object} ctx
+	 */
+	execCommand(name, ctx) {
+		const cmd = this.commands.find((c) => c.name == name);
+
+		if (!cmd) {
+			console.warn(`No command with the name '${name}'!`);
+			return;
+		}
+
+		const context = this.createContext({
+			...ctx,
+			win: window
+		});
+
+		if (!cmd.enabled(context)) return;
+
+		console.log("Command", name);
+		return cmd.action.bind(gDotCommands, context)();
+	}
 };

@@ -67,6 +67,14 @@ var { DevToolsSocketStatus } = ChromeUtils.importESModule(
 	"resource://devtools/shared/security/DevToolsSocketStatus.sys.mjs"
 );
 
+var { ModifierKeyManager } = ChromeUtils.importESModule(
+	"resource://gre/modules/ModifierKeyManager.sys.mjs"
+);
+
+var { AccentColorManager } = ChromeUtils.importESModule(
+	"resource://gre/modules/AccentColorManager.sys.mjs"
+);
+
 /**
  * This is used to delay the startup of the browser
  * until we have completed the delayed startup.
@@ -162,8 +170,10 @@ var gDotInit = {
 		}
 
 		NativeTitlebar.init(document);
+		ModifierKeyManager.init(window);
 
 		new LightweightThemeConsumer(document);
+		new AccentColorManager(document);
 
 		// Check whether we are on Windows 8, if so apply a dark window frame if it is dark enough
 		if (AppConstants.platform == "win") {

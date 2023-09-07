@@ -2,7 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-let gRoutinesLocalization = new Localization(["dot/browser.ftl", "dot/routines.ftl"], true);
+let gRoutinesLocalization = new Localization(
+	["dot/browser.ftl", "dot/routines.ftl"],
+	true
+);
 
 class BrowserRoutine {
 	/**
@@ -20,10 +23,44 @@ class BrowserRoutine {
 	}
 
 	/**
+	 * The routine's action data
+	 * @param {object} options
+	 * @param {boolean} [options.keybindings]
+	 */
+	getActionData({ keybindings }) {
+		return {
+			label: this.localizedLabel,
+			tooltip: keybindings
+				? this.localizedLabelAndKeybind
+				: this.localizedLabel,
+			icon: this.icon,
+			keybindings: this.keybindings
+		};
+	}
+
+	/**
 	 * The localized label for this routine
 	 */
 	get localizedLabel() {
-		return gRoutinesLocalization.formatValueSync(`routine-${this.id}`);
+		const [id, variant] = this.id.split(".");
+
+		const [msg] = gRoutinesLocalization.formatMessagesSync([
+			{ id: `routine-${id}` }
+		]);
+
+		if (msg) {
+			if (variant) {
+				const { value: variantValue } = msg.attributes.find(
+					(a) => a.name == variant
+				);
+
+				return variantValue;
+			} else {
+				return msg.value;
+			}
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -50,10 +87,10 @@ class BrowserRoutine {
 
 	/**
 	 * Performs the routine
-	 * @param {Event} event
+	 * @param {Partial<ReturnType<typeof gDotCommands.createContext>>} ctx
 	 * @returns
 	 */
-	async performRoutine(event) {
+	async performRoutine(ctx) {
 		for await (const block of this.routine) {
 			const blockId = Array.isArray(block) ? block[0] : block;
 			const blockArgs = Array.isArray(block) ? block[1] || {} : {};
@@ -62,7 +99,12 @@ class BrowserRoutine {
 
 			if (command) {
 				try {
-					await Promise.resolve(gDotCommands.execCommand(command.name, blockArgs));
+					await Promise.resolve(
+						gDotCommands.execCommand(command.name, {
+							...blockArgs,
+							...(ctx || {})
+						})
+					);
 				} catch (e) {
 					console.error(
 						`Error running command '${command.name}' in routine '${this.id}'!`,
@@ -71,7 +113,9 @@ class BrowserRoutine {
 					return;
 				}
 			} else {
-				console.warn(`Unknown block type with ID '${blockId}' in routine '${this.id}'!`);
+				console.warn(
+					`Unknown block type with ID '${blockId}' in routine '${this.id}'!`
+				);
 			}
 		}
 	}
@@ -127,11 +171,18 @@ var gDotRoutines = {
 				keybindings: ["Ctrl+Q"]
 			},
 			{
-				id: "new-window",
+				id: "new-tab",
 				icon: "add",
 
 				routine: ["application.new_tab"],
 				keybindings: ["Ctrl+T"]
+			},
+			{
+				id: "close-tab",
+				icon: "close",
+
+				routine: ["application.close_tab"],
+				keybindings: ["Ctrl+W"]
 			},
 			{
 				id: "navigate-back",
@@ -156,7 +207,7 @@ var gDotRoutines = {
 			},
 			{
 				id: "reload-page.bypass-cache",
-				icon: "reload",
+				icon: "sync",
 
 				routine: [["browsing.reload_page", { bypassCache: true }]],
 				keybindings: ["Ctrl+Shift+R"]
@@ -174,6 +225,15 @@ var gDotRoutines = {
 
 				routine: [["browser.toolbar.toggle", { name: "menubar" }]],
 				keybindings: ["Alt"]
+			},
+			{
+				id: "toggle-identity-popout",
+				icon: "info",
+
+				routine: [
+					["browser.popouts.toggle", { name: "page-identity" }]
+				],
+				keybindings: ["Ctrl+I"]
 			}
 		];
 	},
@@ -198,6 +258,18 @@ var gDotRoutines = {
 
 	init() {
 		window.addEventListener("keydown", this);
+
+		for (const bind of this._bindings) {
+			const [msg] = gRoutinesLocalization.formatMessagesSync([
+				{ id: `routine-${bind.id.split(".")[0]}` }
+			]);
+
+			if (!msg) {
+				console.warn(
+					`No localization found for routine with ID '${bind.id}'!`
+				);
+			}
+		}
 	},
 
 	deinit() {
