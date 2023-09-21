@@ -4,8 +4,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-EXTRA_JS_MODULES += [
-    "BrowserShortcuts.sys.mjs",
-    "DotShortcutUtils.sys.mjs",
-    "ModifierKeyManager.sys.mjs",
-]
+dot.jar:
+% resource third-party %res/third-party/ contentaccessible=yes
+    res/third-party/libs/anime.js (./juliangarnier/anime.js)
