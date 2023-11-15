@@ -14,6 +14,8 @@ const registry = {
 
 	BrowserCustomizable:
 		"components/customizableui/BrowserCustomizable.sys.mjs",
+	BrowserCustomizableComponents:
+		"components/customizableui/BrowserCustomizableComponents.sys.mjs",
 	BrowserCustomizableInternal:
 		"components/customizableui/BrowserCustomizableInternal.sys.mjs",
 	BrowserCustomizableShared:
