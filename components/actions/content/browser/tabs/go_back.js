@@ -11,8 +11,8 @@ const { Action } = ChromeUtils.importESModule(
 	"resource://gre/modules/Action.sys.mjs"
 );
 
-export class BrowserTabsStopPageAction extends Action {
-	static id = "browser.tabs.stop_page";
+export class BrowserTabsGoBackAction extends Action {
+	static id = "browser.tabs.go_back";
 
 	constructor() {
 		super();
@@ -22,7 +22,7 @@ export class BrowserTabsStopPageAction extends Action {
 	 * The name of this action
 	 */
 	get name() {
-		return "Stop loading page";
+		return "Go back";
 	}
 
 	/**
@@ -35,6 +35,6 @@ export class BrowserTabsStopPageAction extends Action {
 		const win = event.target.ownerGlobal;
 		const { gDot } = win;
 
-		gDot.tabs.stopTab(args.tab);
+		gDot.tabs.goBack(args.tab);
 	}
 }
