@@ -156,16 +156,17 @@ BrowserTabs.prototype = {
 		}
 
 		if (this._isWebContentsBrowserElement(tab.webContents)) {
-			console.log("tab.docShellIsActive", true);
-			/** @type {ChromeBrowser} */ (
-				tab.webContents
-			).docShellIsActive = true;
-			tab.webContents.setAttribute("primary", "true");
+			const browser = /** @type {ChromeBrowser} */ (tab.webContents);
+
+			browser.docShellIsActive = true;
+			browser.setAttribute("primary", "true");
 		}
 
 		this._selectedTab = tab;
 
-		tab.webContentsPanel.toggleAttribute("visible", true);
+		if (tab.webContentsPanel) {
+			tab.webContentsPanel.toggleAttribute("visible", true);
+		}
 
 		if (tab.previousElementSibling)
 			tab.previousElementSibling.toggleAttribute(
@@ -176,6 +177,29 @@ BrowserTabs.prototype = {
 		this.shouldUpdateWindowTitle();
 
 		this._dispatchWindowEvent("BrowserTabs::TabSelect", { detail: tab });
+
+		const listener = this._tabListeners.get(tab);
+		if (
+			listener &&
+			this._isWebContentsBrowserElement(tab.webContents) &&
+			this._win.gDot.tabs
+		) {
+			const browser = /** @type {ChromeBrowser} */ (tab.webContents);
+
+			const { STATE_START, STATE_STOP, STATE_IS_NETWORK } =
+				Ci.nsIWebProgressListener;
+
+			this._callProgressListenerEvent(
+				browser,
+				"onStateChange",
+				browser.webProgress,
+				null,
+				tab.progress && !this.isBusy
+					? STATE_START | STATE_IS_NETWORK
+					: STATE_STOP | STATE_IS_NETWORK,
+				""
+			);
+		}
 	},
 
 	/**
@@ -477,7 +501,6 @@ BrowserTabs.prototype = {
 		}
 
 		if (uri) {
-			console.log("Setting initial URI to", uri);
 			tabEl._initialURI = uri;
 		}
 
@@ -519,11 +542,13 @@ BrowserTabs.prototype = {
 		} catch (e) {
 			console.error("Error while creating tab!");
 			console.error(e);
-			if (tabEl.webContentsPanel) {
-				tabEl.webContentsPanel.remove();
+			tabEl?.remove();
+
+			if (tabEl?.linkedBrowser) {
+				this._tabFilters.delete(tabEl);
+				this._tabListeners.delete(tabEl);
+				tabEl?.webContentsPanel?.remove();
 			}
-			tabEl.remove();
-			// @todo: unload browser and listeners
 			return null;
 		}
 
@@ -968,14 +993,10 @@ BrowserTabs.prototype = {
 
 			// Check if our URI is a string
 			if (uriToLoad && typeof uriToLoad == "string") {
-				console.log("URI to load is a string", uriToLoad);
-
 				const oa = E10SUtils.predictOriginAttributes({
 					window: this._win,
 					userContextId
 				});
-
-				console.log("origin attributes", oa);
 
 				remoteType = E10SUtils.getRemoteTypeForURI(
 					uriToLoad,
@@ -985,8 +1006,6 @@ BrowserTabs.prototype = {
 					null,
 					oa
 				);
-
-				console.log("Using", remoteType, "as URI to load remote type");
 			} else {
 				// If the URI doesn't exist or isn't a string, we can assume
 				// it's probably still a promise, since uriToLoadPromise returns
@@ -1012,6 +1031,50 @@ BrowserTabs.prototype = {
 			openWindowInfo,
 			triggeringPrincipal
 		});
+	},
+
+	/**
+	 * Calls a progress listener's event handler with arguments
+	 * @param {ChromeBrowser} browser
+	 * @param {string} name
+	 * @param {any[]} args
+	 */
+	_callProgressListenerEvent(browser, name, ...args) {
+		const tab = this.getTabForWebContents(browser);
+
+		if (!tab) {
+			throw new Error(
+				`No tab for browser with ID '${browser.browserId}'.`
+			);
+		}
+
+		const listener = this._tabListeners.get(tab);
+
+		if (!listener) {
+			throw new Error(`No listener for tab with ID '${tab.id}'.`);
+		}
+
+		switch (name) {
+			case "onLocationChange":
+				listener.onLocationChange.call(listener, ...args);
+				break;
+			case "onProgressChange":
+				listener.onProgressChange.call(listener, ...args);
+				break;
+			case "onSecurityChange":
+				listener.onSecurityChange.call(listener, ...args);
+				break;
+			case "onStateChange":
+				listener.onStateChange.call(listener, ...args);
+				break;
+			case "onStatusChange":
+				listener.onStatusChange.call(listener, ...args);
+				break;
+			default:
+				throw new Error(
+					`No progress listener handler for event '${name}'.`
+				);
+		}
 	},
 
 	/**
@@ -1146,9 +1209,11 @@ BrowserTabs.prototype = {
 			/** @type {ChromeBrowser} */ (tab.webContents).destroy();
 		}
 
-		tab.webContentsPanel.remove();
+		if (tab.webContentsPanel) {
+			tab.webContentsPanel.remove();
+		}
 
-		tab.remove();
+		tab?.remove();
 	},
 
 	/**
