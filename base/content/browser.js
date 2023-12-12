@@ -34,6 +34,10 @@ var { BrowserActions } = ChromeUtils.importESModule(
 	"resource:///modules/BrowserActions.sys.mjs"
 );
 
+var { BrowserPanels } = ChromeUtils.importESModule(
+	"resource:///modules/BrowserPanels.sys.mjs"
+);
+
 var { NativeTitlebar } = ChromeUtils.importESModule(
 	"resource:///modules/NativeTitlebar.sys.mjs"
 );
@@ -48,6 +52,10 @@ class BrowserApplication extends BrowserCustomizableArea {
 
 		this.toolbarMutationObserver = new MutationObserver(
 			this.maybePromoteToolbars.bind(this)
+		);
+
+		this.customizableContainer.appendChild(
+			html("browser-customizable-area-empty")
 		);
 	}
 
@@ -70,6 +78,9 @@ class BrowserApplication extends BrowserCustomizableArea {
 
 	/** @type {typeof BrowserActions.prototype} */
 	actions = null;
+
+	/** @type {typeof BrowserPanels.prototype} */
+	panels = null;
 
 	/**
 	 * Determines whether the browser session supports multiple processes
@@ -119,7 +130,7 @@ class BrowserApplication extends BrowserCustomizableArea {
 
 		this.addEventListener(
 			"CustomizableUI::DidMount",
-			this.maybePromoteToolbars.bind(this)
+			this.didMount.bind(this)
 		);
 	}
 
@@ -145,6 +156,13 @@ class BrowserApplication extends BrowserCustomizableArea {
 				return this.tab.linkedBrowser;
 			}
 		};
+	}
+
+	/**
+	 * Fired when the browser mounts its customizable UI
+	 */
+	didMount() {
+		this.maybePromoteToolbars();
 	}
 
 	/**
@@ -193,6 +211,7 @@ class BrowserApplication extends BrowserCustomizableArea {
 		this.shortcuts = new BrowserShortcuts(window);
 		this.commands = new BrowserCommands(window);
 		this.actions = new BrowserActions(this);
+		this.panels = new BrowserPanels(window);
 
 		// Listens for changes to the reduced motion preference
 		window

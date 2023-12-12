@@ -26,9 +26,27 @@ class BrowserToolbarButton extends BrowserContextualMixin(HTMLButtonElement) {
 	}
 
 	/**
+	 * The allowed customizable attributes for the toolbar
+	 */
+	static get customizableAttributes() {
+		return {
+			mode: "mode",
+
+			is: "string"
+		};
+	}
+
+	/**
 	 * The command ID to use for this toolbar button
 	 */
 	commandId = null;
+
+	/**
+	 * Optional arguments to pass to the command
+	 */
+	get commandArgs() {
+		return {};
+	}
 
 	/**
 	 * The anatomy of the toolbar button
@@ -133,7 +151,7 @@ class BrowserToolbarButton extends BrowserContextualMixin(HTMLButtonElement) {
 	 * Updates the mode of the toolbar button
 	 */
 	set mode(newMode) {
-		if (!newMode.length) {
+		if (!newMode || !newMode.length) {
 			this.removeAttribute("mode");
 			return;
 		}
@@ -158,35 +176,30 @@ class BrowserToolbarButton extends BrowserContextualMixin(HTMLButtonElement) {
 			case "label":
 			case "icon":
 			case "disabled":
+			case "inert":
+			case "mode":
 				this[attributeName] = value;
+				break;
+			default:
+				this.setAttribute(attributeName, value);
 				break;
 		}
 	}
 
 	/**
-	 * Triggered when the click event for the toolbar button is fired
-	 * @param {KeyboardEvent} event
+	 * Triggered when a panel is opened onto the toolbar button
+	 * @param {CustomEvent<{ id: string }>} event
 	 */
-	_onTBKey(event) {
-		const handler = () => {
-			clear();
-			this.toggleAttribute("active", true);
-		};
+	_onTBPanelOpen(event) {
+		this.toggleAttribute("active", true);
+	}
 
-		const clear = () => {
-			this.removeEventListener("click", handler);
-			this.removeAttribute("active");
-		};
-
-		if (event.code == "Enter") {
-			clear();
-
-			if (event.type == "keydown") {
-				this.addEventListener("click", handler, { once: true });
-			}
-		} else {
-			clear();
-		}
+	/**
+	 * Triggered when a panel is opened onto the toolbar button
+	 * @param {CustomEvent<{ id: string }>} event
+	 */
+	_onTBPanelClose(event) {
+		this.removeAttribute("active");
 	}
 
 	connectedCallback() {
@@ -214,13 +227,22 @@ class BrowserToolbarButton extends BrowserContextualMixin(HTMLButtonElement) {
 
 			this.addEventListener(
 				"click",
-				this.commandSubscription.invoke.bind(this.commandSubscription)
+				this.commandSubscription.invoke.bind(
+					this.commandSubscription,
+					this.commandArgs
+				)
 			);
 		}
 
-		this.addEventListener("keydown", this._onTBKey.bind(this));
-		this.addEventListener("keyup", this._onTBKey.bind(this));
-		this.addEventListener("blur", this._onTBKey.bind(this));
+		this.addEventListener(
+			"BrowserPanels::PanelOpen",
+			this._onTBPanelOpen.bind(this)
+		);
+
+		this.addEventListener(
+			"BrowserPanels::PanelClose",
+			this._onTBPanelClose.bind(this)
+		);
 	}
 
 	disconnectedCallback() {
@@ -229,9 +251,15 @@ class BrowserToolbarButton extends BrowserContextualMixin(HTMLButtonElement) {
 			this.commandSubscription = null;
 		}
 
-		this.removeEventListener("keydown", this._onTBKey.bind(this));
-		this.removeEventListener("keyup", this._onTBKey.bind(this));
-		this.removeEventListener("blur", this._onTBKey.bind(this));
+		this.removeEventListener(
+			"BrowserPanels::PanelOpen",
+			this._onTBPanelOpen.bind(this)
+		);
+
+		this.removeEventListener(
+			"BrowserPanels::PanelClose",
+			this._onTBPanelClose.bind(this)
+		);
 	}
 }
 

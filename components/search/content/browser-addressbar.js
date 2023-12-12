@@ -7,8 +7,36 @@ class BrowserAddressBar extends BrowserCustomizableArea {
 		super();
 	}
 
+	/**
+	 * The context for this addressbar
+	 */
+	get context() {
+		const self = this;
+
+		return {
+			self,
+			audience: "addressbar",
+
+			get window() {
+				return self.ownerGlobal;
+			},
+
+			get tab() {
+				return self.ownerGlobal.gDot.tabs.selectedTab;
+			},
+
+			get browser() {
+				return this.tab.linkedBrowser;
+			}
+		};
+	}
+
+	handleEvent(event) {}
+
 	connectedCallback() {
-		super.connect("addressbar");
+		super.connect("addressbar", {
+			orientation: "horizontal"
+		});
 
 		window.addEventListener("BrowserTabs::BrowserLocationChange", this);
 		window.addEventListener("BrowserTabs::TabSelect", this);

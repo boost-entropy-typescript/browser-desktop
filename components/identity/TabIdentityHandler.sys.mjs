@@ -36,6 +36,31 @@ export class TabIdentityHandler {
 	tab = null;
 
 	/**
+	 * The type of identity for the tab
+	 */
+	type = null;
+
+	/**
+	 * The icon to use for this tab identity
+	 */
+	icon = null;
+
+	/**
+	 * The label to use for this tab identity
+	 */
+	label = null;
+
+	/**
+	 * The tooltip to use for this tab identity
+	 */
+	tooltip = null;
+
+	/**
+	 * The icon mode to use for this tab identity
+	 */
+	mode = null;
+
+	/**
 	 * The browser element for this tab
 	 * @returns {ChromeBrowser | null}
 	 */
@@ -132,13 +157,13 @@ export class TabIdentityHandler {
 		// We're updating too early, returning early will prevent any issues
 		if (!this.browser) return;
 
-		let type = this._cached?.type || "";
-		let icon = this._cached?.icon || "";
-		let label = this._cached?.label || "";
-		let tooltip = this._cached?.tooltip || "";
-		let mode = this._cached?.mode || "";
+		let type = this.type || "";
+		let icon = this.icon || "";
+		let label = this.label || "";
+		let tooltip = this.tooltip || "";
+		let mode = this.mode || "";
 
-		if (!cache || !this._cached || !type.length || !icon.length) {
+		if (!cache || !type.length || !icon.length) {
 			type = "unknown";
 			icon = "info";
 			label = "Page";
@@ -276,7 +301,11 @@ export class TabIdentityHandler {
 			mode
 		};
 
-		this._cached = data;
+		this.type = type;
+		this.icon = icon;
+		this.label = label;
+		this.tooltip = tooltip;
+		this.mode = mode;
 
 		const evt = new CustomEvent("BrowserTabs::TabIdentityChanged", {
 			detail: {

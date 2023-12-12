@@ -28,6 +28,8 @@ const registry = {
 
 	BrowserCustomizable:
 		"components/customizableui/BrowserCustomizable.sys.mjs",
+	BrowserCustomizableAttributePrimitives:
+		"components/customizableui/BrowserCustomizableAttributePrimitives.sys.mjs",
 	BrowserCustomizableAttributes:
 		"components/customizableui/BrowserCustomizableAttributes.sys.mjs",
 	BrowserCustomizableComponents:
@@ -39,6 +41,8 @@ const registry = {
 
 	BrowserTabs: "components/tabs/BrowserTabs.sys.mjs",
 	BrowserTabsUtils: "components/tabs/BrowserTabsUtils.sys.mjs",
+
+	BrowserPanels: "components/panels/BrowserPanels.sys.mjs",
 
 	BrowserSearch: "components/search/BrowserSearch.sys.mjs",
 
@@ -52,7 +56,7 @@ const registry = {
 
 	StartPage: "components/startpage/StartPage.sys.mjs",
 
-	TabIdentityHandler: "components/tabs/TabIdentityHandler.sys.mjs",
+	TabIdentityHandler: "components/identity/TabIdentityHandler.sys.mjs",
 	TabProgressListener: "components/tabs/TabProgressListener.sys.mjs"
 };
 
