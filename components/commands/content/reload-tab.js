@@ -49,8 +49,8 @@ export class ReloadTabCommand extends TabCommand {
 	 * Fired when the state changes a browser
 	 * @param {object} data
 	 * @param {ChromeBrowser} data.browser
-	 * @param {nsIWebProgress} data.webProgress
-	 * @param {nsIRequest} data.request
+	 * @param {import("third_party/dothq/gecko-types/lib").nsIWebProgress} data.webProgress
+	 * @param {import("third_party/dothq/gecko-types/lib").nsIRequest} data.request
 	 * @param {number} data.stateFlags
 	 * @param {string} data.status
 	 */
@@ -67,7 +67,9 @@ export class ReloadTabCommand extends TabCommand {
 			Ci.nsIWebProgressListener;
 
 		const shouldShowProgress = BrowserTabsUtils.shouldShowProgress(
-			/** @type {nsIChannel} */ (request)
+			/** @type {import("third_party/dothq/gecko-types/lib").nsIChannel} */ (
+				request
+			)
 		);
 
 		this.isLoading =
@@ -80,7 +82,11 @@ export class ReloadTabCommand extends TabCommand {
 
 		if (this.isLoading) {
 			this._clearReloadTimer();
-		} else if (webProgress.isTopLevel && !webProgress.isLoadingDocument) {
+		} else if (
+			request instanceof Ci.nsIRequest &&
+			webProgress.isTopLevel &&
+			!webProgress.isLoadingDocument
+		) {
 			if (this._reloadTimer) return;
 
 			this.disabled = true;

@@ -21,6 +21,7 @@ let elements = {
 	"browser-status": "chrome://dot/content/widgets/browser-status.js",
 	"browser-tabs": "chrome://dot/content/widgets/browser-tabs.js",
 	"browser-tabs-collator": "chrome://dot/content/widgets/browser-tabs-collator.js",
+    "browser-web-container": "chrome://dot/content/widgets/browser-web-container.js",
     "browser-web-frame": "chrome://dot/content/widgets/browser-web-frame.js",
 	"browser-web-panel": "chrome://dot/content/widgets/browser-web-panel.js",
 	"browser-window-controls": "chrome://dot/content/widgets/browser-window-controls.js",
@@ -55,18 +56,7 @@ let noCallbackElements = [
 	"chrome://dot/content/widgets/browser-tab-icon.js",
 	"chrome://dot/content/widgets/browser-tab-label.js",
 	"chrome://dot/content/widgets/browser-toolbar.js",
-	"chrome://dot/content/widgets/browser-web-contents.js",
-
-	"chrome://dot/content/widgets/browser-add-tab-button.js",
-	"chrome://dot/content/widgets/browser-history-navigation-button.js",
-	"chrome://dot/content/widgets/browser-close-tab-button.js",
-	"chrome://dot/content/widgets/browser-copy-button.js",
-	"chrome://dot/content/widgets/browser-cut-button.js",
-	"chrome://dot/content/widgets/browser-paste-button.js",
-	"chrome://dot/content/widgets/browser-reload-button.js",
-	"chrome://dot/content/widgets/browser-select-all-button.js",
-	"chrome://dot/content/widgets/browser-settings-button.js",
-	"chrome://dot/content/widgets/browser-identity-button.js"
+	"chrome://dot/content/widgets/browser-web-contents.js"
 ];
 
 // Define developer-only elements

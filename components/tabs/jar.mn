@@ -14,10 +14,13 @@ dot.jar:
     content/widgets/browser-web-panel.js                (content/browser-web-panel.js)
     content/widgets/browser-web-panel.css               (content/browser-web-panel.css)
 
+    content/widgets/browser-web-container.js            (content/browser-web-container.js)
+
     content/widgets/browser-status.js                   (content/browser-status.js)
     content/widgets/browser-status.css                  (content/browser-status.css)
 
     content/widgets/browser-tab-button.js               (content/browser-tab-button.js)
+    content/widgets/browser-tab-button.css              (content/browser-tab-button.css)
 
     content/widgets/browser-web-frame.js                (content/browser-web-frame.js)
 
@@ -25,10 +28,6 @@ dot.jar:
     content/widgets/browser-tabs.css                    (content/browser-tabs.css)
     
     content/widgets/browser-tabs-collator.js            (content/browser-tabs-collator.js)
-
-    content/widgets/browser-add-tab-button.js           (content/browser-add-tab-button.js)
-
-    content/widgets/browser-close-tab-button.js         (content/browser-close-tab-button.js)
 
     content/widgets/browser-tab-label.js                (content/browser-tab-label.js)
     content/widgets/browser-tab-label.css               (content/browser-tab-label.css)

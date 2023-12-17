@@ -2,19 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-button[is=browser-addressbar-button] {
-    display: flex;
+button[is=browser-tab-button] {
+    padding: 0px;
 
-    padding: 0px 8px;
+    min-height: 0px;
+    min-width: 0px;
 
     --button-default-color: transparent;
 
-    & .browser-button-container {
-        display: flex;
+    padding: 2%;
 
-        gap: 10px;
-        align-items: center;
-
-        flex: 1;
+    & .browser-button-icon {
+        --size: 14px;
     }
 }
