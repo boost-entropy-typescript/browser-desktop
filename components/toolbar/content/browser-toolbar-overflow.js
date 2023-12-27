@@ -2,22 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-class BrowserToolbarButton extends BrowserCommandButton {
-	constructor() {
-		super();
-	}
-
+class BrowserToolbarOverflow extends BrowserButton {
 	connectedCallback() {
 		super.connectedCallback();
 
 		this.classList.add("browser-toolbar-button");
-	}
 
-	disconnectedCallback() {
-		super.disconnectedCallback();
+		this.label = "More...";
+		this.icon = "chevron-down";
 	}
 }
 
-customElements.define("browser-toolbar-button", BrowserToolbarButton, {
+customElements.define("browser-toolbar-overflow", BrowserToolbarOverflow, {
 	extends: "button"
 });

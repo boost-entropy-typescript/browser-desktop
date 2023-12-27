@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-class BrowserAddressbarPanel extends BrowserPanel {
+class BrowserCustomizableAreaOverflowMenu extends BrowserPanelMenu {
 	constructor() {
 		super();
 	}
@@ -10,15 +10,10 @@ class BrowserAddressbarPanel extends BrowserPanel {
 	connectedCallback() {
 		super.connectedCallback();
 
-		this.setAttribute("animate", "true");
-
-		this.appendChild(
-			html(
-				"div",
-				{ class: "browser-panel-container" },
-				html("slot", { name: "panel" })
-			)
-		);
+		super.connect("customizable-area-overflow-menu", {
+			orientation: "vertical",
+			styles: ["chrome://dot/content/widgets/browser-panel-button.css"]
+		});
 	}
 
 	disconnectedCallback() {
@@ -26,6 +21,7 @@ class BrowserAddressbarPanel extends BrowserPanel {
 	}
 }
 
-customElements.define("browser-addressbar-panel", BrowserAddressbarPanel, {
-	extends: "panel"
-});
+customElements.define(
+	"browser-customizable-area-overflow-menu",
+	BrowserCustomizableAreaOverflowMenu
+);
