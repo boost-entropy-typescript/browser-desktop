@@ -2,15 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@import url("chrome://dot/content/widgets/browser-addressbar-panel.css");
+@import url("chrome://dot/content/widgets/browser-urlbar.css");
 
-:host(browser-addressbar) {
+:host(browser-urlbar-container) {
     display: flex;
-    flex: 500 500;
-
-    height: 85%;
-
-    -moz-window-dragging: no-drag;
-
-    --addressbar-border-radii: 8px;
+    flex: 1;
 }

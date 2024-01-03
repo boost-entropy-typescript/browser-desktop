@@ -51,8 +51,7 @@ html|select,
     border: none;
     border-radius: 6px;
 
-    font-size: 14px;
-    font-weight: 500;
+    font: message-box;
 
     color: var(--button-color, currentColor);
     background-color: var(--button-background, var(--button-default-color));
@@ -178,10 +177,10 @@ html|button[primary],
 
 @media (prefers-contrast) {
 
-    button:not(:disabled),
+    button:not(:disabled, [inert]),
     select:not(:disabled),
-    xul|button:not(:disabled),
-    html|button:not(:disabled),
+    xul|button:not(:disabled, [inert]),
+    html|button:not(:disabled, [inert]),
     html|select:not(:disabled),
     ::slotted(menuitem:not([disabled])),
     ::slotted(menu:not([disabled])) {

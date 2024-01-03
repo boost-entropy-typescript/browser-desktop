@@ -6,22 +6,28 @@
 @import url("chrome://dot/content/widgets/browser-toolbar-overflow.css");
 
 :host(browser-toolbar) {
+    --toolbar-width: var(--area-width, inherit);
+    --toolbar-height: var(--area-height, inherit);
+    --toolbar-background: var(--area-background);
+}
+
+:host(browser-toolbar) {
     display: flex;
     align-items: stretch;
 
-    width: var(--area-width, inherit);
-    height: var(--area-height, inherit);
+    width: var(--toolbar-width);
+    height: var(--toolbar-height);
 
-    min-height: var(--area-min-height);
+    min-height: var(--toolbar-min-height);
 
-    background-color: transparent;
+    background-color: var(--toolbar-background, transparent);
     color: var(--lwt-text-color);
 
     --padding: 4px;
 
     -moz-window-dragging: drag;
 
-    --area-min-height: 28px;
+    --toolbar-min-height: 28px;
 
     --csd-visibility: none;
 }
@@ -86,4 +92,18 @@
 
 :host(browser-toolbar) browser-window-controls {
     display: var(--csd-visibility);
+}
+
+:host(browser-toolbar) browser-window-controls[position="end"] {
+    position: absolute;
+
+    right: 0;
+    top: 0;
+
+    background-color: var(--toolbar-background);
+    height: var(--toolbar-height);
+
+    & button {
+        z-index: 2147483647;
+    }
 }
