@@ -6,6 +6,10 @@ const { ActionsDispatcher } = ChromeUtils.importESModule(
 	"resource://gre/modules/ActionsDispatcher.sys.mjs"
 );
 
+const { ActionsMessenger } = ChromeUtils.importESModule(
+	"resource://gre/modules/ActionsMessenger.sys.mjs"
+);
+
 const { CommandAudiences } = ChromeUtils.importESModule(
 	"resource://gre/modules/CommandAudiences.sys.mjs"
 );
@@ -24,12 +28,10 @@ const { ConsoleAPI } = ChromeUtils.importESModule(
  */
 
 /**
- * @typedef {CustomEvent<{}> & { detail: { originalEvent: E }, target: CommandSubscriber<T> }} CommandEvent
- * @template [T=Record<string, any>]
- * @template [E=Event]
+ * @typedef {XULCommandEvent & { target: CommandSubscriber }} CommandEvent
  */
 
-export class Command {
+export class Command extends ActionsMessenger {
 	/** @type {typeof CommandSubscription.prototype} */
 	#subscription = null;
 
@@ -90,6 +92,8 @@ export class Command {
 	 * @param {BrowserCustomizableArea} area
 	 */
 	constructor(subscription, subscriber, area) {
+		super();
+
 		this.#subscription = subscription;
 		this.subscriber = subscriber;
 		this.area = area;
@@ -102,6 +106,7 @@ export class Command {
 		this._disabled = this.createEmptyMap();
 		this._inert = this.createEmptyMap();
 		this._mode = this.createEmptyMap();
+		this._checked = this.createEmptyMap();
 
 		this._setupEventListeners();
 	}
@@ -167,7 +172,7 @@ export class Command {
 	/**
 	 * Perform this command
 	 *
-	 * @param {CommandEvent<{}>} [event]
+	 * @param {CommandEvent} [event]
 	 */
 	run(event) {
 		if ("on_command" in this) {
@@ -193,6 +198,9 @@ export class Command {
 	/** @type {Map<string, boolean>} */
 	_mode = null;
 
+	/** @type {Map<string, boolean>} */
+	_checked = null;
+
 	/**
 	 * Updates an attribute on the command
 	 *
@@ -206,6 +214,10 @@ export class Command {
 
 		/** @type {Map<string, string>} */
 		const attributeMap = this[`_${attribute}`];
+
+		if (!attributeMap) {
+			throw new Error(`No attribute map for '${attribute}'!`);
+		}
 
 		if (
 			!(
@@ -333,6 +345,21 @@ export class Command {
 	}
 
 	/**
+	 * Determines the checked state of this command
+	 * @returns {any}
+	 */
+	get checked() {
+		return !!this._checked.get(CommandAudiences.DEFAULT);
+	}
+
+	/**
+	 * Updates the checked state of this command
+	 */
+	set checked(newValue) {
+		this.setAttribute("checked", newValue);
+	}
+
+	/**
 	 * The context for this command
 	 */
 	get context() {
@@ -350,6 +377,6 @@ export class Command {
 	 * The actions dispatcher for this command
 	 */
 	get actions() {
-		return new ActionsDispatcher(this.area);
+		return new ActionsDispatcher(this, this.area);
 	}
 }
