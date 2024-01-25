@@ -34,21 +34,21 @@ namespace dot {
             /* id, resourceURI, flags */
             {
                 "blocked", 
-                "chrome://dot/content/interstitials/tab-error.html",
+                "chrome://browser/content/blockedSite.xhtml",
                 nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
                     nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
                     nsIAboutModule::HIDE_FROM_ABOUTABOUT
             },
             {
                 "certerror", 
-                "chrome://dot/content/interstitials/tab-error.html",
+                "chrome://global/content/aboutNetError.html",
                 nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
                     nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
                     nsIAboutModule::HIDE_FROM_ABOUTABOUT
             },
             {
                 "framecrashed", 
-                "chrome://dot/content/interstitials/frame-crashed.html",
+                "chrome://browser/content/aboutFrameCrashed.html",
                 nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
                     nsIAboutModule::URI_CAN_LOAD_IN_CHILD |
                     nsIAboutModule::HIDE_FROM_ABOUTABOUT
@@ -59,8 +59,7 @@ namespace dot {
                 nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::ENABLE_INDEXED_DB |
                     nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
                     nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
-                    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
-                    nsIAboutModule::ALLOW_UNSANITIZED_CONTENT
+                    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT
             },
             {
                 "newtab", 
@@ -68,8 +67,7 @@ namespace dot {
                 nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::ENABLE_INDEXED_DB |
                     nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
                     nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
-                    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
-                    nsIAboutModule::ALLOW_UNSANITIZED_CONTENT
+                    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT
             },
             {
                 "rights", 
@@ -80,7 +78,7 @@ namespace dot {
             },
             {
                 "tabcrashed", 
-                "chrome://dot/content/interstitials/tab-crashed.html",
+                "chrome://browser/content/aboutTabCrashed.xhtml",
                 nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
                     nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::HIDE_FROM_ABOUTABOUT
             },
@@ -97,8 +95,7 @@ namespace dot {
                 nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::ENABLE_INDEXED_DB |
                     nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
                     nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
-                    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
-                    nsIAboutModule::ALLOW_UNSANITIZED_CONTENT
+                    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT
             }
         };
 
