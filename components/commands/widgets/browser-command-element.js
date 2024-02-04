@@ -24,6 +24,18 @@ var BrowserCommandElementMixin = (Base) => {
 			};
 		}
 
+		/**
+		 * The tooltip element for this command element
+		 */
+		get tooltipEl() {
+			return /** @type {BrowserTooltip} */ (
+				this.querySelector("tooltip") ||
+					document.createXULElement("tooltip", {
+						is: "browser-tooltip"
+					})
+			);
+		}
+
 		static get observedAttributes() {
 			// prettier-ignore
 			return (/** @type {any} */ (Base).observedAttributes || []).concat(["commandid"]);

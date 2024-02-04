@@ -163,6 +163,22 @@ class BrowserButton extends BrowserContextualMixin(HTMLButtonElement) {
 	}
 
 	/**
+	 * The accelerator text of the browser button
+	 */
+	get accelerator() {
+		return this.getAttribute("accelerator");
+	}
+
+	/**
+	 * Updates the checked/toggled state of the browser button
+	 */
+	set accelerator(newAccelerator) {
+		this.setAttribute("accelerator", newAccelerator);
+
+		this._updateTooltipText();
+	}
+
+	/**
 	 * Toggles a transitioning psuedo class on the button
 	 * @param {string} name
 	 */
@@ -210,20 +226,35 @@ class BrowserButton extends BrowserContextualMixin(HTMLButtonElement) {
 	}
 
 	/**
+	 * Computes the tooltip text for this button
+	 */
+	getTooltipText() {
+		let tooltipText = "";
+
+		const label = this.getAttribute("label");
+		const labelAuxiliary = this.getAttribute("labelauxiliary");
+		const accelerator = this.getAttribute("accelerator");
+
+		if (labelAuxiliary) {
+			tooltipText = labelAuxiliary;
+		} else if (label) {
+			tooltipText = label;
+		}
+
+		if (accelerator) {
+			tooltipText += ` (${accelerator})`;
+		}
+
+		return tooltipText;
+	}
+
+	/**
 	 * Updates the button's tooltip text
 	 */
 	_updateTooltipText() {
-		if (!this.elements.tooltip.visible) return;
+		if (this.elements.tooltip.state == "closed") return;
 
-		let tooltipText = "";
-
-		if (this.labelAuxiliary) {
-			tooltipText = this.labelAuxiliary;
-		} else if (this.label) {
-			tooltipText = this.label;
-		}
-
-		this.elements.tooltip.label = tooltipText;
+		this.elements.tooltip.label = this.getTooltipText();
 	}
 
 	/**
@@ -243,6 +274,9 @@ class BrowserButton extends BrowserContextualMixin(HTMLButtonElement) {
 			"buttonId" in this
 		);
 
+		this.setAttribute("tooltip", "_child");
+		this.prepend(this.elements.tooltip);
+
 		this.appendChild(
 			html(
 				"div",
@@ -252,9 +286,6 @@ class BrowserButton extends BrowserContextualMixin(HTMLButtonElement) {
 			)
 		);
 
-		this.setAttribute("tooltip", "_child");
-		this.appendChild(this.elements.tooltip);
-
 		this.addEventListener(
 			"mouseleave",
 			this._handleBrowserButtonEvent.bind(this)
@@ -263,6 +294,7 @@ class BrowserButton extends BrowserContextualMixin(HTMLButtonElement) {
 			"focusout",
 			this._handleBrowserButtonEvent.bind(this)
 		);
+
 		this.addEventListener("popupshowing", this._onPopupShowing.bind(this));
 
 		this.resizeObserver.observe(this);
