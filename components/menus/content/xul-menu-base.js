@@ -2,6 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var { ThemeIcons } = ChromeUtils.importESModule(
+	"resource://gre/modules/ThemeIcons.sys.mjs"
+);
+
 /**
  * Creates a MozMenuItem element
  *
@@ -24,12 +28,18 @@ var MozMenuItemBaseMixin = (Base) => {
 
 		/**
 		 * Creates a new menu item image
+		 * @param {string} slot
+		 * @param {string} [defaultImage]
 		 */
-		#createMenuItemImage(slot) {
+		#createMenuItemImage(slot, defaultImage) {
 			const image = document.createXULElement("image");
 
 			image.classList.add("browser-menuitem-image");
 			image.slot = slot;
+
+			if (defaultImage) {
+				/** @type {HTMLImageElement} */ (image).src = defaultImage;
+			}
 
 			return image;
 		}
@@ -50,14 +60,21 @@ var MozMenuItemBaseMixin = (Base) => {
 			return {
 				label: /** @type {HTMLSpanElement} */ (
 					this.querySelector(".browser-menuitem-label") ||
-						html("span", {
-							class: "browser-menuitem-label",
-							slot: "label"
-						})
+						html(
+							"span",
+							{
+								class: "browser-menuitem-label",
+								slot: "label"
+							},
+							this.getAttribute("label") || ""
+						)
 				),
 				imageLeft: /** @type {HTMLImageElement} */ (
 					this.querySelector("[slot=image-left]") ||
-						this.#createMenuItemImage("image-left")
+						this.#createMenuItemImage(
+							"image-left",
+							this.getAttribute("image") || ""
+						)
 				),
 				accelerator: /** @type {HTMLSpanElement} */ (
 					this.querySelector(".browser-menuitem-accelerator") ||
@@ -83,21 +100,14 @@ var MozMenuItemBaseMixin = (Base) => {
 		_observeCommandMutation(audience, attributeName, value) {
 			switch (attributeName) {
 				case "labelAuxiliary":
-					this._tooltipText = value;
-					break;
 				case "label":
-					this.label = value;
-					break;
 				case "disabled":
+				case "inert":
 				case "checked":
-					// This will set [disabled="true"] when disabled is true, and will
-					// will remove the attribute completely when it is false.
-					this.setAttribute(attributeName, value);
-					this.toggleAttribute(attributeName, !!value);
+					this[attributeName] = value;
 					break;
 				case "icon":
-					// Terminology between XUL and our APIs differs
-					this.image = "chrome://dot/skin/icons/" + value + ".svg";
+					this.image = ThemeIcons.getURI(value);
 					break;
 				default:
 					this.setAttribute(attributeName, value);
@@ -159,7 +169,7 @@ var MozMenuItemBaseMixin = (Base) => {
 		 * The label of this menu item
 		 */
 		get label() {
-			return this.elements.label.textContent;
+			return this.getAttribute("label");
 		}
 
 		set label(newValue) {
@@ -170,10 +180,23 @@ var MozMenuItemBaseMixin = (Base) => {
 		}
 
 		/**
+		 * The auxiliary label of this menu item
+		 */
+		get labelAuxiliary() {
+			return this.getAttribute("labelauxiliary");
+		}
+
+		set labelAuxiliary(newValue) {
+			if (this.labelAuxiliary == newValue) return;
+
+			this.setAttribute("labelauxiliary", newValue);
+		}
+
+		/**
 		 * The image of this menu item
 		 */
 		get image() {
-			return this.elements.imageLeft.src;
+			return this.getAttribute("image");
 		}
 
 		set image(newValue) {
@@ -184,17 +207,40 @@ var MozMenuItemBaseMixin = (Base) => {
 		}
 
 		/**
+		 * Determines whether the menu item is disabled or not
+		 */
+		get disabled() {
+			return this.getAttribute("disabled");
+		}
+
+		set disabled(newValue) {
+			this.setAttribute("disabled", newValue);
+			this.toggleAttribute("disabled", !!newValue);
+		}
+
+		/**
+		 * Determines whether the menu item is checked or not
+		 */
+		get checked() {
+			return this.getAttribute("checked");
+		}
+
+		set checked(newValue) {
+			this.setAttribute("checked", newValue);
+			this.toggleAttribute("checked", !!newValue);
+		}
+
+		/**
 		 * The accelerator text of this menu item
 		 */
 		get acceltext() {
-			return this.elements.accelerator.textContent;
+			return this.getAttribute("acceltext");
 		}
 
 		set acceltext(newValue) {
-			if (this.acceltext == newValue) return;
+			this.setAttribute("acceltext", newValue);
 
 			this.elements.accelerator.textContent = newValue;
-			this.setAttribute("acceltext", newValue);
 		}
 
 		connectedCallback() {
@@ -220,20 +266,11 @@ var MozMenuItemBaseMixin = (Base) => {
 				html("slot")
 			);
 
-			this.append(this.elements.imageLeft, this.elements.label);
-
-			if (this.getAttribute("label")) {
-				this.label = this.getAttribute("label");
-			}
-
-			if (this.getAttribute("image")) {
-				this.image = this.getAttribute("image");
-			}
-
-			if (this.getAttribute("acceltext")) {
-				this.append(this.elements.accelerator);
-				this.acceltext = this.getAttribute("acceltext");
-			}
+			this.append(
+				this.elements.imageLeft,
+				this.elements.label,
+				this.elements.accelerator
+			);
 
 			if (
 				this.tagName == "menu" ||
@@ -242,10 +279,6 @@ var MozMenuItemBaseMixin = (Base) => {
 			) {
 				this.append(this.elements.imageRight);
 			}
-
-			if (this.closest("menugroup")) {
-				this.setAttribute("grouped", "");
-			}
 		}
 
 		attributeChangedCallback(attribute, oldValue, newValue) {
@@ -253,28 +286,9 @@ var MozMenuItemBaseMixin = (Base) => {
 
 			switch (attribute) {
 				case "label":
-					this.label = newValue;
-
-					if (this.hasAttribute("grouped")) {
-						this.setAttribute(
-							"tooltiptext",
-							this._tooltipText || this.label
-						);
-					}
-					break;
 				case "image":
 				case "acceltext":
 					this[attribute] = newValue;
-					break;
-				case "grouped":
-					if (this.hasAttribute("grouped")) {
-						this.setAttribute(
-							"tooltiptext",
-							this._tooltipText || this.label
-						);
-					} else {
-						this.removeAttribute("tooltiptext");
-					}
 					break;
 			}
 		}
