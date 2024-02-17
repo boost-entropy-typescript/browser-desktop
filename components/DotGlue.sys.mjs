@@ -9,6 +9,7 @@ var lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
 	ActorManagerParent: "resource://gre/modules/ActorManagerParent.sys.mjs",
+	AddonManager: "resource://gre/modules/AddonManager.sys.mjs",
 	BuiltInThemes: "resource:///modules/BuiltInThemes.sys.mjs",
 	ContextualIdentityService:
 		"resource://gre/modules/ContextualIdentityService.sys.mjs",
@@ -18,7 +19,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
 });
 
 XPCOMUtils.defineLazyModuleGetters(lazy, {
-	AddonManager: "resource://gre/modules/AddonManager.jsm",
 	Blocklist: "resource://gre/modules/Blocklist.jsm",
 	FeatureGate: "resource://featuregates/FeatureGate.jsm",
 	PdfJs: "resource://pdf.js/PdfJs.jsm",
@@ -41,6 +41,27 @@ const PREF_PDFJS_ISDEFAULT_CACHE_STATE = "pdfjs.enabledCache.state";
 
 const JSPROCESSACTORS = {};
 const JSWINDOWACTORS = {
+	BrowserStartup: {
+		parent: {
+			esModuleURI: "resource:///actors/BrowserStartupParent.sys.mjs"
+		},
+
+		child: {
+			esModuleURI: "resource:///actors/BrowserStartupChild.sys.mjs",
+			events: {
+				MozBeforeInitialXULLayout: {},
+				DOMContentLoaded: {},
+				load: { mozSystemGroup: true, capture: true },
+				unload: { mozSystemGroup: true, capture: true },
+				close: { mozSystemGroup: true, capture: true }
+			}
+		},
+
+		allFrames: true,
+		includeChrome: true,
+		matches: ["chrome://dot/content/browser.xhtml"]
+	},
+
 	ClickHandler: {
 		parent: {
 			esModuleURI: "resource:///actors/ClickHandlerParent.sys.mjs"
@@ -500,7 +521,7 @@ export class DotGlue {
 			"nsIUserIdleService"
 		);
 
-		XPCOMUtils.defineLazyGetter(
+		ChromeUtils.defineLazyGetter(
 			this,
 			"distributionCustomizer",
 			function () {
