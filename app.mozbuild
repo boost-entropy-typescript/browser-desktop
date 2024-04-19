@@ -28,7 +28,5 @@ DIRS += [
     "/browser/components/shell",
     "/browser/components/tabunloader", # todo: try shim this
 
-    "/toolkit/modules",
-
     "/%s" % CONFIG["MOZ_BRANDING_DIRECTORY"],
 ]
