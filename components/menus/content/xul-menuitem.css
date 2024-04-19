@@ -13,7 +13,6 @@ menu {
 
     padding: var(--menuitem-padding-y, var(--menuitem-default-padding-y)) var(--menuitem-padding-x, var(--menuitem-default-padding-x));
     border-radius: 6px;
-    transition: var(--button-transition);
 }
 
 :is(menuitem, menu)[_moz-menuactive="true"]:not([disabled]) {
@@ -68,7 +67,6 @@ menupopup>menu:not(:last-of-type) {
 ::slotted(.browser-menuitem-label),
 ::slotted(.browser-menuitem-accelerator) {
     font: message-box;
-    max-width: 80%;
     overflow: clip;
     text-overflow: ellipsis;
     white-space: nowrap;
