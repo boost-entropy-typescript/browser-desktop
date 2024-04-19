@@ -50,4 +50,6 @@ export interface BrowsingContext {
     currentWindowGlobal: WindowGlobalParent;
 
     group: BrowsingContextGroup;
+
+    topChromeWindow?: ChromeWindow;
 }

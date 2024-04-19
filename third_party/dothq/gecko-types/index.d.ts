@@ -168,6 +168,8 @@ declare global {
 			pressure: number,
 			inputSource: number
 		) => void;
+
+        clickEventPrevented: () => boolean;
 	}
 
 	interface XULElementWithCommandHandler {
@@ -190,6 +192,10 @@ declare global {
 		InspectorUtils: Gecko.InspectorUtils;
 		windowGlobalChild: Gecko.WindowGlobalChildInstance;
 		windowUtils: Gecko.WindowUtils;
+        scrollMaxX: number;
+        scrollMaxY: number;
+        scrollMinX: number;
+        scrollMinY: number;
 	}
 
 	interface Element extends Gecko.CustomElement {
