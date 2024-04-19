@@ -33,6 +33,12 @@ browser-window-controls[hidden] {
 }
 
 @media (-moz-gtk-csd-available) {
+
+    /* Add a gap when using GTK csd, Gecko no longer does this for us */
+    browser-window-controls {
+        gap: 5px;
+    }
+
     @media (-moz-gtk-csd-minimize-button) {
         browser-window-controls .control-min {
             appearance: auto;
