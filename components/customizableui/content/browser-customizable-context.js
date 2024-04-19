@@ -6,6 +6,10 @@ var { ActionsReceiver } = ChromeUtils.importESModule(
 	"resource://gre/modules/ActionsReceiver.sys.mjs"
 );
 
+var { BrowserCustomizableShared } = ChromeUtils.importESModule(
+	"resource://gre/modules/BrowserCustomizableShared.sys.mjs"
+);
+
 /** @typedef {ReturnType<typeof BrowserCustomizableContextMixin<typeof Element>>["prototype"]} BrowserCustomizableContext */
 
 /**
@@ -16,7 +20,8 @@ var { ActionsReceiver } = ChromeUtils.importESModule(
  */
 var BrowserCustomizableContextMixin = (Base) => {
 	const BrowserCustomizableContext = class extends Base {
-		CUSTOMIZABLE_AREA_IMPL = Symbol("CUSTOMIZABLE_AREA_IMPL");
+		CUSTOMIZABLE_AREA_IMPL =
+			BrowserCustomizableShared.customizableAreaImplSymbol;
 
 		/**
 		 * The actions receiver instance
@@ -40,12 +45,15 @@ var BrowserCustomizableContextMixin = (Base) => {
 				/** @type {ShadowRoot} */ (this.getRootNode()).host
 			);
 
-			if (!(areaHost instanceof BrowserCustomizableContext)) {
+			if (
+				!areaHost ||
+				!(areaHost instanceof BrowserCustomizableContext)
+			) {
 				throw new Error(
 					`BrowserCustomizableArea (${
 						this.tagName
 					}): Area host is not a customizable context instance, got '${
-						/** @type {any} */ (areaHost).constructor.name
+						/** @type {any} */ (areaHost)?.constructor.name
 					}' instead!`
 				);
 			}

@@ -50,6 +50,11 @@ export const BrowserCustomizableShared = {
 	customizablePaintEvent: "Paint",
 
 	/**
+	 * The symbol used to identify customizable area implementations
+	 */
+	customizableAreaImplSymbol: Symbol("CUSTOMIZABLE_AREA_IMPL"),
+
+	/**
 	 * The global customizable logger object
 	 * @type {Console}
 	 */
@@ -65,5 +70,16 @@ export const BrowserCustomizableShared = {
 		if (typeof obj !== "object" || Array.isArray(obj) || obj == null) {
 			throw new Error("Illegal object supplied");
 		}
+	},
+
+	/**
+	 * Determines whether the element implements customizable context via an area
+	 * @param {Element} element
+	 */
+	isCustomizableAreaImplementation(element) {
+		return (
+			"CUSTOMIZABLE_AREA_IMPL" in element &&
+			element.CUSTOMIZABLE_AREA_IMPL === this.customizableAreaImplSymbol
+		);
 	}
 };
