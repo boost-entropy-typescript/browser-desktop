@@ -142,25 +142,17 @@ export class DotTooltipListenerChild extends JSWindowActorChild {
 		if (this._currentTooltip) {
 			const doc = this._currentTooltip.ownerDocument;
 
-			Services.els.removeSystemEventListener(doc, "wheel", this, true);
-			Services.els.removeSystemEventListener(
-				doc,
-				"mousedown",
-				this,
-				true
-			);
-			Services.els.removeSystemEventListener(doc, "mouseup", this, true);
-			Services.els.removeSystemEventListener(doc, "keydown", this, true);
+			doc.removeEventListener("wheel", this, true);
+			doc.removeEventListener("mousedown", this, true);
+			doc.removeEventListener("mouseup", this, true);
+			doc.removeEventListener("keydown", this, true);
 
-			Services.els.removeSystemEventListener(
-				this._currentTooltip,
+			this._currentTooltip.removeEventListener(
 				"popupshowing",
 				this,
 				false
 			);
-
-			Services.els.removeSystemEventListener(
-				this._currentTooltip,
+			this._currentTooltip.removeEventListener(
 				"popuphiding",
 				this,
 				false
@@ -362,24 +354,13 @@ export class DotTooltipListenerChild extends JSWindowActorChild {
 			triggerNode || event.target
 		);
 
-		Services.els.addSystemEventListener(
-			tooltip,
-			"popupshowing",
-			this,
-			false
-		);
+		tooltip.addEventListener("popupshowing", this, false);
+		tooltip.addEventListener("popuphiding", this, false);
 
-		Services.els.addSystemEventListener(
-			tooltip,
-			"popuphiding",
-			this,
-			false
-		);
-
-		Services.els.addSystemEventListener(doc, "wheel", this, true);
-		Services.els.addSystemEventListener(doc, "mousedown", this, true);
-		Services.els.addSystemEventListener(doc, "mouseup", this, true);
-		Services.els.addSystemEventListener(doc, "keydown", this, true);
+		doc.addEventListener("wheel", this, true);
+		doc.addEventListener("mousedown", this, true);
+		doc.addEventListener("mouseup", this, true);
+		doc.addEventListener("keydown", this, true);
 
 		Object.defineProperty(tooltip, "triggerNode", {
 			configurable: true,
@@ -540,11 +521,11 @@ export class DotTooltipListenerChild extends JSWindowActorChild {
 	 * @param {Node} node
 	 */
 	addTooltipSupport(node) {
-		Services.els.addSystemEventListener(node, "mouseout", this, false);
-		Services.els.addSystemEventListener(node, "mousemove", this, false);
-		Services.els.addSystemEventListener(node, "mousedown", this, false);
-		Services.els.addSystemEventListener(node, "mouseup", this, false);
-		Services.els.addSystemEventListener(node, "dragstart", this, true);
+		node.addEventListener("mouseout", this, false);
+		node.addEventListener("mousemove", this, false);
+		node.addEventListener("mousedown", this, false);
+		node.addEventListener("mouseup", this, false);
+		node.addEventListener("dragstart", this, true);
 	}
 
 	/**

@@ -57,23 +57,7 @@ export interface ServicesEls {
      * Returns true if a event target has any listener for the given type.
      */
     hasListenersFor(aEventTarget: EventTarget, aType: string): boolean;
- 
-    /**
-     * Add a system-group eventlistener to a event target.
-     */
-    addSystemEventListener(target: EventTarget,
-                                type: string,
-                                listener: any,
-                                useCapture: boolean): void;
- 
-    /**
-     * Remove a system-group eventlistener from a event target.
-     */
-    removeSystemEventListener(target: EventTarget,
-                                type: string,
-                                listener: any,
-                                useCapture: boolean): void;
- 
+
     addListenerForAllEvents(target: EventTarget,
                                 listener: any,
                                 aUseCapture?: boolean,
