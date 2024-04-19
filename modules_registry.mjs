@@ -9,6 +9,8 @@ const registry = {
 	AccentColorManager: "themes/AccentColorManager.sys.mjs",
 	AccessibilityFocus: "modules/AccessibilityFocus.sys.mjs",
 
+	AnimationEngine: "modules/AnimationEngine.sys.mjs",
+
 	DotWindowTracker: "modules/DotWindowTracker.sys.mjs",
 
 	DOMUtils: "modules/DOMUtils.sys.mjs",

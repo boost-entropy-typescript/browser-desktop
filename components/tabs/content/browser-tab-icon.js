@@ -2,9 +2,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var { AnimationEngine } = ChromeUtils.importESModule(
+	"resource://gre/modules/AnimationEngine.sys.mjs"
+);
+
 class BrowserTabIcon extends BrowserContextualMixin(HTMLElement) {
 	constructor() {
 		super();
+
+		this.animator = new AnimationEngine(this.ownerGlobal, {
+			targets: this,
+			easing: AnimationEngine.Easings.Linear(),
+			loop: true
+		});
 	}
 
 	get elements() {
@@ -53,8 +63,8 @@ class BrowserTabIcon extends BrowserContextualMixin(HTMLElement) {
 					this.elements.spinner.style.transform = "";
 				}
 
-				this.spinnerAnimation?.pause();
 				this.spinnerAnimation = this.createSpinnerAnimation();
+				this.spinnerAnimation?.play();
 
 				break;
 			case "hideicon":
@@ -87,12 +97,10 @@ class BrowserTabIcon extends BrowserContextualMixin(HTMLElement) {
 	createSpinnerAnimation() {
 		const progress = parseInt(this.getAttribute("progress"));
 
-		return anime({
+		return this.animator.animate({
 			targets: gDot.prefersReducedMotion ? [] : this.elements.spinner,
+			autoplay: false,
 			rotate: "+=1turn",
-			direction: "normal",
-			loop: true,
-			easing: "linear",
 			duration: progress == 2 ? 600 : 1500
 		});
 	}
@@ -106,7 +114,6 @@ class BrowserTabIcon extends BrowserContextualMixin(HTMLElement) {
 		);
 
 		this.spinnerAnimation = this.createSpinnerAnimation();
-		this.spinnerAnimation.pause();
 
 		if (this.hostContext.tab) {
 			// @todo: really awful way of doing this

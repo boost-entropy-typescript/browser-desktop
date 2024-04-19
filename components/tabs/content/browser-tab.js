@@ -10,6 +10,10 @@ var { ConsoleAPI } = ChromeUtils.importESModule(
 	"resource://gre/modules/Console.sys.mjs"
 );
 
+var { AnimationEngine } = ChromeUtils.importESModule(
+	"resource://gre/modules/AnimationEngine.sys.mjs"
+);
+
 class BrowserRenderedTab extends BrowserCustomizableArea {
 	/**
 	 * The minimum width of a tab allowed
@@ -289,7 +293,7 @@ class BrowserRenderedTab extends BrowserCustomizableArea {
 			: Services.prefs.getIntPref(
 					"dot.tabs.in_animation_duration_ms",
 					50
-			  );
+				);
 	}
 
 	/**
@@ -301,89 +305,49 @@ class BrowserRenderedTab extends BrowserCustomizableArea {
 			: Services.prefs.getIntPref(
 					"dot.tabs.out_animation_duration_ms",
 					30
-			  );
+				);
 	}
 
-	get animationProps() {
-		const updateCallback = () => {
-			if (this.logger.shouldLog("debug")) {
-				const style = getComputedStyle(this);
-				const containerStyle = getComputedStyle(
-					this.customizableContainer
-				);
+	/**
+	 * The animation instance for this tab
+	 */
+	get animator() {
+		if (this._animator) return this._animator;
 
-				const width = this.getBoundingClientRect().width;
-				const maxWidth = parseInt(style.maxWidth) || width;
-				const minWidth = parseInt(style.minWidth) || width;
-				const opacity = parseFloat(containerStyle.opacity);
-
-				this.logger.debug(
-					`    W = ${width
-						.toFixed(0)
-						.padStart(3, "0")}, MaxW = ${maxWidth
-						.toFixed(0)
-						.padStart(3, "0")}, MinW = ${minWidth
-						.toFixed(0)
-						.padStart(3, "0")}, O = ${opacity.toFixed(1)}`
-				);
-			}
-		};
-
-		return {
-			easing: "cubicBezier(0.2, 1.0, 0.2, 1.0)",
-			start: updateCallback,
-			update: updateCallback,
-			complete: updateCallback
-		};
+		return (this._animator = new AnimationEngine(this.ownerGlobal, {
+			targets: this,
+			easing: AnimationEngine.Easings.CubicBeizer(0.2, 1.0, 0.2, 1.0)
+		}));
 	}
 
 	/**
 	 * Starts the in animation for the tab
 	 */
-	animateIn(duration = this._tabInAnimateDuration) {
+	async animateIn(duration = this._tabInAnimateDuration) {
 		this.setAttribute("anime-animating", "opening");
 
 		this.width = 0;
 
 		this.logger.debug(`Animating in for ${duration}ms`);
 
-		const inAnimation = {
-			...this.animationProps,
+		const animation = this.animator.animate({
 			duration,
-			endDelay: duration
-		};
+			endDelay: duration,
 
-		const widthAnimation = window.timeline(inAnimation).add({
-			targets: this,
 			width: [
 				0,
 				Math.max(this.tabbox.tabMinWidth, this.tabbox.tabMaxWidth)
 			]
 		});
 
-		const opacityAnimation = window.timeline(inAnimation).add({
-			targets: this.customizableContainer,
-			duration: inAnimation.duration / 2,
-			delay: inAnimation.duration * 0.05,
-			opacity: [0, 1]
-		});
-
-		return new Promise((r) => {
-			Promise.allSettled([
-				widthAnimation.finished,
-				opacityAnimation.finished
-			]).then(() => {
-				this.removeAttribute("anime-animating");
-
-				r();
-			});
-		});
+		await animation.finished;
+		this.removeAttribute("anime-animating");
 	}
 
 	/**
 	 * Starts the out animation for the tab
 	 */
-	animateOut(duration = this._tabOutAnimateDuration) {
+	async animateOut(duration = this._tabOutAnimateDuration) {
 		const tabWidth = this.getBoundingClientRect().width;
 
 		this.setAttribute("anime-animating", "closing");
@@ -401,31 +365,14 @@ class BrowserRenderedTab extends BrowserCustomizableArea {
 
 		this.logger.debug(`Animating out for ${duration}ms`);
 
-		const outAnimation = {
-			...this.animationProps,
+		const animation = this.animator.animate({
 			duration,
-			endDelay: 300
-		};
+			endDelay: 300,
 
-		const widthAnimation = window.timeline(outAnimation).add({
-			targets: this,
 			width: [tabWidth, 0]
 		});
 
-		const opacityAnimation = window.timeline(outAnimation).add({
-			targets: this.customizableContainer,
-			duration: outAnimation.duration / 2,
-			opacity: 0
-		});
-
-		return new Promise((r) => {
-			Promise.allSettled([
-				widthAnimation.finished,
-				opacityAnimation.finished
-			]).then(() => {
-				r();
-			});
-		});
+		await animation.finished;
 	}
 
 	/**
