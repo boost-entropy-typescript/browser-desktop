@@ -110,6 +110,7 @@ declare global {
 	interface Event {
 		defaultCancelled: boolean;
 		defaultPreventedByChrome: boolean;
+        composedTarget: EventTarget;
 	}
 
 	interface Console {
@@ -168,5 +169,9 @@ declare global {
 
         scrollLeftMin: number;
         scrollLeftMax: number;
+    }
+
+    interface Node {
+        nodePrincipal: any /** @todo: nsIPrincipal */;
     }
 }

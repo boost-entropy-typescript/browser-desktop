@@ -1,0 +1,31 @@
+From de37dc421ed503a55d55dbb0bb04abd680bcef3a Mon Sep 17 00:00:00 2001
+From: kierandrewett <kieran@dothq.org>
+Date: Thu, 4 Apr 2024 21:22:53 +0100
+Subject: [PATCH] Show native context menus in non-lwt theme contexts
+
+---
+ layout/xul/nsXULPopupManager.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/layout/xul/nsXULPopupManager.cpp b/layout/xul/nsXULPopupManager.cpp
+index 332d60d3638..78cf658372d 100644
+--- a/layout/xul/nsXULPopupManager.cpp
++++ b/layout/xul/nsXULPopupManager.cpp
+@@ -904,7 +904,13 @@ void nsXULPopupManager::ShowPopup(Element* aPopup, nsIContent* aAnchorContent,
+ void nsXULPopupManager::ShowPopupAtScreen(Element* aPopup, int32_t aXPos,
+                                           int32_t aYPos, bool aIsContextMenu,
+                                           Event* aTriggerEvent) {
+-  if (aIsContextMenu && ShouldUseNativeContextMenus() &&
++
++  Element* rootEl = aPopup->OwnerDoc()->GetRootElement();
++
++  if (aIsContextMenu && (
++        ShouldUseNativeContextMenus() ||
++        !rootEl->AttrValueIs(kNameSpaceID_None, nsGkAtoms::lwtheme,
++                                nsGkAtoms::_true, eCaseMatters)) &&
+       ShowPopupAsNativeMenu(aPopup, aXPos, aYPos, aIsContextMenu,
+                             aTriggerEvent)) {
+     return;
+-- 
+2.43.0
+

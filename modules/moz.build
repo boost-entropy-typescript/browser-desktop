@@ -4,6 +4,7 @@
 
 EXTRA_JS_MODULES += [
     "AccessibilityFocus.sys.mjs",
+    "AnimationEngine.sys.mjs",
     "DevToolsServer.sys.mjs",
     "DOMUtils.sys.mjs",
     "DotWindowTracker.sys.mjs",

@@ -46,25 +46,3 @@
         }
     }
 }
-
-/* No icon supplied and we're in either icons or icons_text */
-.browser-button:not([icon])[label]:not([mode=text]) .browser-button-container>* {
-    &.browser-button-label {
-        display: flex !important;
-    }
-
-    &:not(.browser-button-label) {
-        display: none !important;
-    }
-}
-
-/* No label supplied and we're in text mode */
-.browser-button:not([label])[icon][mode=text] .browser-button-container>* {
-    &.browser-button-icon {
-        display: flex !important;
-    }
-
-    &:not(.browser-button-icon) {
-        display: none !important;
-    }
-}

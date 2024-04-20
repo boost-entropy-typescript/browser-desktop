@@ -214,9 +214,8 @@ BrowserCustomizableInternal.prototype = {
 
 		// Edge case for when a parent somewhat implements the area
 		// without actually extending the customizable area class.
-		// prettier-ignore
-		const implementsContext = 
-			"CUSTOMIZABLE_AREA_IMPL" in /** @type {BrowserCustomizableContext} */ (parentElement);
+		const implementsContext =
+			Shared.isCustomizableAreaImplementation(parentElement);
 
 		if (implementsContext) {
 			return /** @type {BrowserCustomizableArea} */ (parentElement);

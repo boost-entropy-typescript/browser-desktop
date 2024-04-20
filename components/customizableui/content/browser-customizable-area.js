@@ -30,15 +30,7 @@ class BrowserCustomizableArea extends BrowserCustomizableContextMixin(
 	 * Determines which attributes should be persisted and stored to preferences
 	 */
 	static get observedAttributes() {
-		return [
-			"mode",
-			"orientation",
-			"accent",
-			"width",
-			"height",
-			"background",
-			"text"
-		];
+		return ["mode", "orientation", "width", "height", "background", "text"];
 	}
 
 	/**
@@ -141,20 +133,6 @@ class BrowserCustomizableArea extends BrowserCustomizableContextMixin(
 	}
 
 	/**
-	 * Determines whether this area has an accent color
-	 */
-	get accent() {
-		return this.hasAttribute("accent");
-	}
-
-	/**
-	 * Updates the orientation of this area
-	 */
-	set accent(toggled) {
-		this.toggleAttribute("accent", toggled);
-	}
-
-	/**
 	 * The styles to use inside this area
 	 * @type {string[]}
 	 */
@@ -181,33 +159,6 @@ class BrowserCustomizableArea extends BrowserCustomizableContextMixin(
 		return {
 			content: () => !!this.shadowRoot
 		};
-	}
-
-	/**
-	 * Renders a registered template
-	 * @param {string} templateId
-	 * @returns {Element | DocumentFragment}
-	 */
-	createTemplateFragment(templateId) {
-		return gDot.customizable.createTemplateFragment(this, templateId);
-	}
-
-	/**
-	 * Creates a new customizable component
-	 * @param {Parameters<typeof gDot.customizable.internal.createComponent>[0]} type
-	 * @param {Parameters<typeof gDot.customizable.internal.createComponent>[1]} [attributes]
-	 * @param {Parameters<typeof gDot.customizable.internal.createComponent>[2]} [children]
-	 * @returns
-	 */
-	createCustomizableComponent(type, attributes, children) {
-		return gDot.customizable.internal.createComponent(
-			type,
-			attributes,
-			children,
-			{
-				area: this
-			}
-		);
 	}
 
 	maybeShowDebug() {
@@ -265,7 +216,6 @@ class BrowserCustomizableArea extends BrowserCustomizableContextMixin(
 	 * @param {"horizontal" | "vertical"} [options.orientation] - The default orientation of this area
 	 * @param {string} [options.mode] - The default mode to use for this area
 	 * @param {string[]} [options.styles] - The styles to use within this area
-	 * @param {string} [options.templateId] - The template ID to use for this area
 	 */
 	connect(name, options) {
 		this.name = name;
@@ -286,12 +236,6 @@ class BrowserCustomizableArea extends BrowserCustomizableContextMixin(
 				})
 			)
 		);
-
-		if (options?.templateId) {
-			const fragment = this.createTemplateFragment(options.templateId);
-
-			this.customizableContainer.appendChild(fragment);
-		}
 
 		this.#init();
 	}

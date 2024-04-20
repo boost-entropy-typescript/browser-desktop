@@ -106,16 +106,15 @@ class BrowserCustomizableOverflowableArea extends BrowserCustomizableArea {
 	 * Ensures the overflow button is visible in the toolbar
 	 */
 	#ensureOverflowButton() {
-		if (!this.#overflowButton) {
-			this.#overflowButton = this.createCustomizableComponent("button", {
-				command: "internal/customizableui/area-show-overflowing"
-			});
-
-			this.customizableContainer.insertAdjacentElement(
-				"afterend",
-				this.#overflowButton
-			);
-		}
+		// if (!this.#overflowButton) {
+		// 	this.#overflowButton = this.createCustomizableComponent("button", {
+		// 		command: "internal/customizableui/area-show-overflowing"
+		// 	});
+		// 	this.customizableContainer.insertAdjacentElement(
+		// 		"afterend",
+		// 		this.#overflowButton
+		// 	);
+		// }
 	}
 
 	/**

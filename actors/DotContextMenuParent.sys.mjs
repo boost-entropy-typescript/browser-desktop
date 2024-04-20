@@ -1,29 +1,43 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+const { ContentDOMReference } = ChromeUtils.importESModule(
+	"resource://gre/modules/ContentDOMReference.sys.mjs"
+);
 
 export class DotContextMenuParent extends JSWindowActorParent {
-	/** @param {import("third_party/dothq/gecko-types/lib").ReceiveMessageArgument<>} message  */
+	/**
+	 * Handles incoming messages to the context menu parent
+	 * @param {import("third_party/dothq/gecko-types/lib").ReceiveMessageArgument} message
+	 */
 	receiveMessage(message) {
-		if (message.name !== "contextmenu") return;
+		// Attempt to resolve the target in the event,
+		// otherwise, check if we're inside a browser,
+		// otehrwise, use the top chrome window.
+		const target = /** @type {Element} */ (
+			ContentDOMReference.resolve(message.data.target) ||
+				this.browsingContext.embedderElement ||
+				this.browsingContext.topChromeWindow
+		);
 
-		const browser = this.manager.rootFrameLoader.ownerElement;
-		const win = browser.ownerGlobal;
+		const win = target.ownerGlobal;
+		const doc = target.ownerDocument;
 
-		// Make sure this browser belongs to us before we open the panel
-		if (win.gDot && win.gDot.tabs.getTabForWebContents(browser)) {
-			const { x, y, context } = message.data;
+		console.log("ParentReceive", target, message.data.context);
 
-			console.log(x, y, context);
-		}
-	}
+		const menuEvent = new /** @type {any} */ (win).CustomEvent(
+			"ContextMenu::Launch",
+			{
+				detail: message.data,
+				composed: true,
+				bubbles: true
+			}
+		);
 
-	hiding() {
-		try {
-			this.sendAsyncMessage("ContextMenu:Hiding", {});
-		} catch (e) {
-			// This will throw if the content goes away while the
-			// context menu is still open.
-		}
+		console.log("ParentSend", target, menuEvent);
+
+		target.dispatchEvent(menuEvent);
+
 	}
 }

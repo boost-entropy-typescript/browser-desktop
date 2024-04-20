@@ -20,11 +20,11 @@ export interface WindowUtils {
 		height: number
 	): DOMRect;
 
-    /**
-     * Transform a rectangle given in coordinates relative to this document
-     * into CSS coordinates relative to the screen.
-     */
-    toScreenRectInCSSUnits(
+	/**
+	 * Transform a rectangle given in coordinates relative to this document
+	 * into CSS coordinates relative to the screen.
+	 */
+	toScreenRectInCSSUnits(
 		x: number,
 		y: number,
 		width: number,
@@ -48,24 +48,34 @@ export interface WindowUtils {
 	 */
 	getBoundsWithoutFlushing(element: Element): DOMRect;
 
+	AGENT_SHEET: 0;
+	USER_SHEET: 1;
+	AUTHOR_SHEET: 2;
+	/**
+	 * Synchronously loads a style sheet from |sheetURI| and adds it to the list
+	 * of additional style sheets of the document.
+	 *
+	 * These additional style sheets are very much like user/agent sheets loaded
+	 * with loadAndRegisterSheet. The only difference is that they are applied only
+	 * on the document owned by this window.
+	 *
+	 * Sheets added via this API take effect immediately on the document.
+	 */
+	loadSheet(sheetURI: nsIURI, type: number): void;
 
-    AGENT_SHEET: 0;
-    USER_SHEET: 1;
-    AUTHOR_SHEET: 2;
-    /**
-     * Synchronously loads a style sheet from |sheetURI| and adds it to the list
-     * of additional style sheets of the document.
-     *
-     * These additional style sheets are very much like user/agent sheets loaded
-     * with loadAndRegisterSheet. The only difference is that they are applied only
-     * on the document owned by this window.
-     *
-     * Sheets added via this API take effect immediately on the document.
-     */
-    loadSheet(sheetURI: nsIURI, type: number): void;
-  
-    /**
-     * Same as the above method but allows passing the URI as a string.
-     */
-    loadSheetUsingURIString(sheetURI: string, type: number): void;
+	/**
+	 * Same as the above method but allows passing the URI as a string.
+	 */
+	loadSheetUsingURIString(sheetURI: string, type: number): void;
+
+	/**
+	 * Sets WidgetEvent::mFlags::mOnlyChromeDispatch to true to ensure that
+	 * the event is propagated only to chrome.
+	 * Event's .target property will be aTarget.
+	 * Returns the same value as what EventTarget.dispatchEvent does.
+	 */
+	dispatchEventToChromeOnly(
+		target: EventTarget,
+		event: Event
+	): boolean;
 }

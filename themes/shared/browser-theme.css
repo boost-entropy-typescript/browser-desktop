@@ -2,79 +2,84 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+:root {
+    --browser-shadow-panel: 0 8px 14px -2px rgba(0, 0, 0, 0.25), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
 /* Colours used for light themes */
 :root {
     /* Colours */
-    --fdn-colours-red: hsl(0, 95%, 36%);
-    --fdn-colours-red-secondary: hsla(0, 95%, 36%, 0.07);
-    --fdn-colours-orange: hsl(29, 90%, 53%);
-    --fdn-colours-orange-secondary: hsla(29, 90%, 53%, 0.07);
-    --fdn-colours-yellow: hsl(54, 100%, 48%);
-    --fdn-colours-yellow-secondary: hsla(54, 100%, 48%, 0.07);
-    --fdn-colours-green: hsl(130, 100%, 20%);
-    --fdn-colours-green-secondary: hsla(130, 100%, 20%, 0.07);
-    --fdn-colours-blue: hsl(209, 97%, 39%);
-    --fdn-colours-blue-secondary: hsla(209, 97%, 39%, 0.07);
-    --fdn-colours-purple: hsl(263, 95%, 40%);
-    --fdn-colours-purple-secondary: hsla(263, 95%, 40%, 0.07);
-    --fdn-colours-pink: hsl(317, 100%, 43%);
-    --fdn-colours-pink-secondary: hsla(317, 100%, 43%, 0.07);
-    --fdn-colours-black: hsl(216, 100%, 5%);
-    --fdn-colours-black-secondary: hsla(216, 100%, 5%, 0.07);
-    --fdn-colours-white: hsl(255, 100%, 100%);
-    --fdn-colours-pblack: hsl(0, 0%, 0%);
-    --fdn-colours-gray: hsl(0, 0%, 87%);
-    --fdn-colours-gray-secondary: hsl(0, 0%, 93%);
-    --fdn-colours-link: hsl(209, 65%, 35%);
-    --fdn-colours-visited-link: hsl(263, 65%, 35%);
+    --browser-colors-red: hsl(0, 95%, 36%);
+    --browser-colors-red-secondary: hsla(0, 95%, 36%, 0.07);
+    --browser-colors-orange: hsl(29, 90%, 53%);
+    --browser-colors-orange-secondary: hsla(29, 90%, 53%, 0.07);
+    --browser-colors-yellow: hsl(54, 100%, 48%);
+    --browser-colors-yellow-secondary: hsla(54, 100%, 48%, 0.07);
+    --browser-colors-green: hsl(130, 100%, 20%);
+    --browser-colors-green-secondary: hsla(130, 100%, 20%, 0.07);
+    --browser-colors-blue: hsl(209, 97%, 39%);
+    --browser-colors-blue-secondary: hsla(209, 97%, 39%, 0.07);
+    --browser-colors-purple: hsl(263, 95%, 40%);
+    --browser-colors-purple-secondary: hsla(263, 95%, 40%, 0.07);
+    --browser-colors-pink: hsl(317, 100%, 43%);
+    --browser-colors-pink-secondary: hsla(317, 100%, 43%, 0.07);
+    --browser-colors-dark: hsl(216, 100%, 5%);
+    --browser-colors-dark-secondary: hsla(216, 100%, 5%, 0.07);
+    --browser-colors-white: hsl(255, 100%, 100%);
+    --browser-colors-black: hsl(0, 0%, 0%);
+    --browser-colors-gray: hsl(0, 0%, 87%);
+    --browser-colors-gray-secondary: hsl(0, 0%, 93%);
+    --browser-colors-link: hsl(209, 65%, 35%);
+    --browser-colors-visited-link: hsl(263, 65%, 35%);
 }
 
 /* Colours used for darker themes */
 :root[lwtheme-brighttext] {
-    --fdn-colours-red: hsl(0, 55%, 36%);
-    --fdn-colours-red-secondary: hsla(0, 55%, 36%, 0.07);
-    --fdn-colours-orange: hsl(29, 50%, 53%);
-    --fdn-colours-orange-secondary: hsla(29, 50%, 53%, 0.07);
-    --fdn-colours-yellow: hsl(54, 100%, 68%);
-    --fdn-colours-yellow-secondary: hsla(54, 100%, 68%, 0.07);
-    --fdn-colours-green: hsl(130, 40%, 40%);
-    --fdn-colours-green-secondary: hsla(130, 40%, 40%, 0.07);
-    --fdn-colours-blue: hsl(209, 50%, 50%);
-    --fdn-colours-blue-secondary: hsla(209, 50%, 50%, 0.07);
-    --fdn-colours-purple: hsl(263, 55%, 60%);
-    --fdn-colours-purple-secondary: hsla(263, 55%, 60%, 0.07);
-    --fdn-colours-pink: hsl(317, 30%, 63%);
-    --fdn-colours-pink-secondary: hsla(317, 30%, 63%, 0.07);
+    --browser-colors-red: hsl(0, 55%, 36%);
+    --browser-colors-red-secondary: hsla(0, 55%, 36%, 0.07);
+    --browser-colors-orange: hsl(29, 50%, 53%);
+    --browser-colors-orange-secondary: hsla(29, 50%, 53%, 0.07);
+    --browser-colors-yellow: hsl(54, 100%, 68%);
+    --browser-colors-yellow-secondary: hsla(54, 100%, 68%, 0.07);
+    --browser-colors-green: hsl(130, 40%, 40%);
+    --browser-colors-green-secondary: hsla(130, 40%, 40%, 0.07);
+    --browser-colors-blue: hsl(209, 50%, 50%);
+    --browser-colors-blue-secondary: hsla(209, 50%, 50%, 0.07);
+    --browser-colors-purple: hsl(263, 55%, 60%);
+    --browser-colors-purple-secondary: hsla(263, 55%, 60%, 0.07);
+    --browser-colors-pink: hsl(317, 30%, 63%);
+    --browser-colors-pink-secondary: hsla(317, 30%, 63%, 0.07);
 }
 
+/* Accent colours */
 :root[accentcolor="system"] {
     --browser-accent-color: AccentColor;
 }
 
 :root[accentcolor="red"] {
-    --browser-accent-color: var(--fdn-colours-red);
+    --browser-accent-color: var(--browser-colors-red);
 }
 
 :root[accentcolor="orange"] {
-    --browser-accent-color: var(--fdn-colours-orange);
+    --browser-accent-color: var(--browser-colors-orange);
 }
 
 :root[accentcolor="yellow"] {
-    --browser-accent-color: var(--fdn-colours-yellow);
+    --browser-accent-color: var(--browser-colors-yellow);
 }
 
 :root[accentcolor="green"] {
-    --browser-accent-color: var(--fdn-colours-green);
+    --browser-accent-color: var(--browser-colors-green);
 }
 
 :root[accentcolor="blue"] {
-    --browser-accent-color: var(--fdn-colours-blue);
+    --browser-accent-color: var(--browser-colors-blue);
 }
 
 :root[accentcolor="purple"] {
-    --browser-accent-color: var(--fdn-colours-purple);
+    --browser-accent-color: var(--browser-colors-purple);
 }
 
 :root[accentcolor="pink"] {
-    --browser-accent-color: var(--fdn-colours-pink);
+    --browser-accent-color: var(--browser-colors-pink);
 }
